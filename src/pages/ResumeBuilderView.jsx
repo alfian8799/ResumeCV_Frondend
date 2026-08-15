@@ -1,8 +1,8 @@
-
-export default function ResumeBuilderView() {
+const ResumeBuilderView = () => {
   return (
-    <div>
-      
-    </div>
+    <div>ResumeBuilderView</div>
   )
+  
 }
+
+export default ResumeBuilderView

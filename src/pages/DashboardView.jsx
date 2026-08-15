@@ -2,9 +2,7 @@
 
 const DashboardView = () => {
   return (
-    <div>
-      
-    </div>
+    <div>Dashboard</div>
   )
 }
 

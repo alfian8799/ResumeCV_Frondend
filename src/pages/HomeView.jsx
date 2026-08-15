@@ -1,8 +1,7 @@
-
-export default function HomeView() {
+const HomeView = () => {
   return (
-    <div>
-      
-    </div>
-  )
+    <div className="flex flex-col items-center justify-center h-screen"></div>
+    )
 }
+
+export default HomeView

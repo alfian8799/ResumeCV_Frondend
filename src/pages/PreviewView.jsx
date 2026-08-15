@@ -1,9 +1,7 @@
-
-
-export default function PreviewView() {
+const PreviewView = () => {
   return (
-    <div>
-      
-    </div>
+    <div>PreviewView</div>
   )
 }
+
+export default PreviewView
