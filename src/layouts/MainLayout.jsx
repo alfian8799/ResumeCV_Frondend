@@ -1,11 +1,12 @@
-import { Outlet } from "react-router"
+import Header from "../components/Header"
+import DashboardView from "../pages/DashboardView"
 
 const MainLayout = () => {
   return (
    <>
-    <h1 className="">Header</h1>
-    <Outlet />
-    <h1 className="">Footer</h1>
+    <Header />
+    <DashboardView />
+    <h1 className="bg-black w-full text-white">Footer</h1>
    </>
   )
 }

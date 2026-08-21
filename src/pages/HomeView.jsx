@@ -1,11 +1,21 @@
+import CallToAction from '../components/CallToAction.jsx';
+import Feature from '../components/Feature.jsx';
+import Footer from '../components/Footer.jsx';
+import Hero from '../components/Hero.jsx';
+import Testimoni from '../components/Testimoni.jsx';
+
 const HomeView = () => {
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-      <h1 className="text-5xl font-bold text-white">
-        HomeView
-      </h1>
-    </div>
-    )
+    <>
+      <Hero />
+      <Feature />
+      <Testimoni />
+      <CallToAction />
+      <Footer />
+
+    </>
+
+  )
 }
 
 export default HomeView
