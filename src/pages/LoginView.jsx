@@ -1,8 +1,18 @@
 import { useState } from "react";
 import { User2Icon, Mail, Lock } from "lucide-react"
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../stores/authStore";
+import api from "../configs/axios.js"
+
 
 const LoginView = () => {
   const [state, setState] = useState("login");
+  const [disable, setDisable] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const navigate = useNavigate();
+  const { setUserData } = useAuthStore();
+
 
   const [formData, setFormData] = useState({
     name: "",
@@ -15,9 +25,26 @@ const LoginView = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    setDisable(true);
+    try {
+      if (state === "login") {
+        const response = await api.post("/auth/login", formData);
+        alert("Login Success");
+        setUserData(response.data.user);
+        navigate("/app");
+      } else {
+        const response = await api.post("/auth/register", formData);
+        alert("Register Success");
+        setUserData(response.data.user);
+        navigate("/app");
+      }
+    } catch (error) {
+      setErrorMsg(error.response.data.message);
+    } finally {
+      setDisable(false);
+    }
   };
 
   return (
@@ -35,6 +62,12 @@ const LoginView = () => {
             Please  {state === "login" ? "Login" : "Sign up"} in to continue
           </p>
 
+          {/* Error Message */}
+          {errorMsg && (
+            <div className="text-red-500 text-sm mt-2">{errorMsg}</div>
+          )}
+
+          {/* Login Form */}
           {state !== "login" && (
             <div className="flex items-center mt-6 w-full bg-white/5 ring-2 ring-white/10 focus-within:ring-indigo-500/60 h-12 rounded-full overflow-hidden pl-6 gap-2 transition-all ">
               <User2Icon size={16} color="#4f39f6" />
@@ -45,11 +78,12 @@ const LoginView = () => {
                 className="w-full bg-transparent text-white placeholder-white/60 border-none outline-none "
                 value={formData.name}
                 onChange={handleChange}
-                required
+               
               />
             </div>
           )}
 
+          {/* Email Form */}
           <div className="flex items-center w-full mt-4 bg-white/5 ring-2 ring-white/10 focus-within:ring-indigo-500/60 h-12 rounded-full overflow-hidden pl-6 gap-2 transition-all ">
             <Mail size={16} color="#4f39f6" />
             <input
@@ -59,10 +93,10 @@ const LoginView = () => {
               className="w-full bg-transparent text-white placeholder-white/60 border-none outline-none "
               value={formData.email}
               onChange={handleChange}
-              required
             />
           </div>
 
+          {/* Password Form */}
           <div className=" flex items-center mt-4 w-full bg-white/5 ring-2 ring-white/10 focus-within:ring-indigo-500/60 h-12 rounded-full overflow-hidden pl-6 gap-2 transition-all ">
             <Lock size={16} color="#4f39f6" />
             <input
@@ -72,23 +106,26 @@ const LoginView = () => {
               className="w-full bg-transparent text-white placeholder-white/60 border-none outline-none"
               value={formData.password}
               onChange={handleChange}
-              required
+             
             />
           </div>
 
+          {/* Forget Password */}
           <div className="mt-4 text-left">
             {/* <button className="text-sm text-indigo-400 hover:underline">
               Forget password?
             </button> */}
           </div>
 
+            
           <button
             type="submit"
             className="mt-2 w-full h-11 rounded-full text-white bg-indigo-600 hover:bg-indigo-500 transition "
+            disable:bg-gray-400 disabled:cursor-not-allowed disable:text-white
+            disabled={disable}
           >
             {state === "login" ? "Login" : "Sign up"}
           </button>
-
           <p
             onClick={() =>
               setState((prev) => (prev === "login" ? "register" : "login"))
@@ -103,6 +140,7 @@ const LoginView = () => {
             </span>
           </p>
         </form>
+
         {/* Soft Backdrop*/}
         <div className="fixed inset-0 -z-1 pointer-events-none">
           <div className="absolute left-1/2 top-20 -translate-x-1/2 w-245 h-115 bg-linear-to-tr from-indigo-800/35 to-transparent rounded-full blur-3xl" />
