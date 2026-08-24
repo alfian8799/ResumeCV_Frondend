@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuthStore } from '../stores/authStore';
+
 
 const Hero = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const toggleMenu = () => { setIsMenuOpen(!isMenuOpen) };
+    const { isAuthentication } = useAuthStore();
 
     return (
         <>
@@ -39,12 +42,23 @@ const Hero = () => {
                         <a className="hover:text-white/80" href="#testimoni">Testimoni</a>
                         <a className="hover:text-white/80" href="#cta">Contact</a>
 
-                        <Link to="/login" className="md:hidden flex bg-violet-600 text-slate-100 pr-8 pl-2 py-2 rounded-full text-base font-medium hover:bg-violet-700 transition items-center">
-                            <div className='size-9 rounded-full text-violet-600 bg-white mr-4 flex items-center justify-center'>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-move-right-icon lucide-move-right"><path d="M18 8L22 12L18 16" /><path d="M2 12H22" /></svg>
-                            </div>
-                            Get started
-                        </Link>
+                        {isAuthentication ? (
+                            <Link to={"/app"} className="md:hidden flex bg-violet-600 text-slate-100 pr-8 pl-2 py-2 rounded-full text-base font-medium hover:bg-violet-700 transition items-center">
+                                <div className='size-9 rounded-full text-violet-600 bg-white mr-4 flex items-center justify-center'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-move-right-icon lucide-move-right"><path d="M18 8L22 12L18 16" /><path d="M2 12H22" /></svg>
+                                </div>
+                                Dashboard
+                            </Link>
+
+                        ):(
+                            <Link to={"/login"} className="md:hidden flex bg-violet-600 text-slate-100 pr-8 pl-2 py-2 rounded-full text-base font-medium hover:bg-violet-700 transition items-center">
+                                <div className='size-9 rounded-full text-violet-600 bg-white mr-4 flex items-center justify-center'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-move-right-icon lucide-move-right"><path d="M18 8L22 12L18 16" /><path d="M2 12H22" /></svg>
+                                </div>
+                                Get started
+                            </Link>
+                        )}
+                      
                         <button id="closeMenu" onClick={toggleMenu} className="md:hidden text-gray-600 bg-white/10 p-1.5 rounded-md">
                             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"
                                 strokeLinecap="round" strokeLinejoin="round">
@@ -54,14 +68,25 @@ const Hero = () => {
                     </nav>
                     {/* Tombol Get Started - Desktop Version */}
                     <div className="flex items-center">
-                        <Link to="/login" className="hidden md:flex bg-violet-600 text-slate-100 pr-8 pl-2 py-2 rounded-full text-base font-medium hover:bg-violet-700 transition items-center">
-                            <div className='size-9 rounded-full text-violet-600 bg-white mr-4 flex items-center justify-center'>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-move-right-icon lucide-move-right"><path d="M18 8L22 12L18 16" /><path d="M2 12H22" /></svg>
-                            </div>
-                            Get started
-                        </Link>
+                        
+                           {isAuthentication ? (
+                            <Link to="/login" className="hidden md:flex bg-violet-600 text-slate-100 pr-8 pl-2 py-2 rounded-full text-base font-medium hover:bg-violet-700 transition items-center">
+                                <div className='size-9 rounded-full text-violet-600 bg-white mr-4 flex items-center justify-center'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-move-right-icon lucide-move-right"><path d="M18 8L22 12L18 16" /><path d="M2 12H22" /></svg>
+                                </div>
+                                Dashboard
+                            </Link>
 
+                        ):(
+                            <Link to="/login" className="hidden md:flex bg-violet-600 text-slate-100 pr-8 pl-2 py-2 rounded-full text-base font-medium hover:bg-violet-700 transition items-center">
+                                <div className='size-9 rounded-full text-violet-600 bg-white mr-4 flex items-center justify-center'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-move-right-icon lucide-move-right"><path d="M18 8L22 12L18 16" /><path d="M2 12H22" /></svg>
+                                </div>
+                                Get started
+                            </Link>
+                        )};
 
+                       
                         <button id="openMenu" onClick={toggleMenu} className="md:hidden text-gray-600 bg-white/10 p-1.5 rounded-md">
                             <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M4 6h16M4 12h16M4 18h16" />

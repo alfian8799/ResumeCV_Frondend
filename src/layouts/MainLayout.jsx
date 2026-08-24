@@ -1,14 +1,17 @@
+import { Navigate, Outlet } from "react-router-dom";
 import Header from "../components/Header"
-import DashboardView from "../pages/DashboardView"
+import { useAuthStore } from "../stores/authStore"
 
 const MainLayout = () => {
-  return (
+  const { isAuthentication } = useAuthStore();
+  return isAuthentication ? (
    <>
     <Header />
-    <DashboardView />
-    <h1 className="bg-black w-full text-white">Footer</h1>
+    <Outlet />
    </>
-  )
-}
+  ):(
+    <Navigate to={"/login"} replace/>
+  );
+};
 
 export default MainLayout

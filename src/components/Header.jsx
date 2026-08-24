@@ -7,6 +7,7 @@ import api from "../configs/axios.js";
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, removeUserData } = useAuthStore();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const navigate = useNavigate();
 
@@ -14,7 +15,7 @@ const Header = () => {
     try {
       await api.post("/auth/logout", {});
       removeUserData();
-      alert('Logout Success');
+      // alert('Logout Success');
       navigate('/');
 
     } catch (error) {
@@ -57,7 +58,7 @@ const Header = () => {
           <div className="hidden md:flex items-center gap-4">
             <span className="text-sm text-neutral-400 font-medium">Hy, {user.name}</span>
             <button
-              onClick={handleLogout}
+              onClick={() => setShowLogoutModal(true)}
               className="flex items-center gap-2.5 bg-linear-to-r from-violet-600 to-indigo-600 text-white hover:opacity-90 active:scale-95 transition text-sm font-medium pl-5 pr-1.5 py-1.5 rounded-full cursor-pointer shadow-[0_0_15px_rgba(139,92,246,0.3)]">
               Logout
               <span className="size-7 rounded-full bg-white text-violet-600 flex items-center justify-center">
@@ -84,7 +85,10 @@ const Header = () => {
               className="absolute top-full left-0 w-full mt-2 bg-neutral-900 border border-neutral-800 rounded-2xl flex flex-col p-5 gap-3 md:hidden shadow-2xl z-50">
               <span className="text-sm text-neutral-400 px-2">Hy, Alfian</span>
               <button
-                onClick={handleLogout}
+                onClick={() => {
+                  setMenuOpen(false);
+                  setShowLogoutModal(true);
+                }}
                 className=" flex items-center justify-center gap-2.5 bg-linear-to-r from-violet-600 to-indigo-600 text-white text-sm font-medium px-5 py-2.5 rounded-full cursor-pointer w-full">
                 Logout
 
@@ -98,6 +102,49 @@ const Header = () => {
           )}
         </nav>
       </header>
+
+      {/* POP-UP MODAL KONFIRMASI LOGOUT */}
+      {showLogoutModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4">
+          <div className="bg-neutral-900 border border-neutral-800 rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl animate-in fade-in zoom-in duration-200">
+
+            {/* Ikon Peringatan/Tanya */}
+            <div className="mx-auto w-12 h-12 rounded-full bg-violet-600/10 border border-violet-500/20 flex items-center justify-center text-violet-500 mb-4">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+            </div>
+
+            {/* Teks Konfirmasi */}
+            <h3 className="text-white text-lg font-semibold mb-2">Keluar dari Akun?</h3>
+            <p className="text-neutral-400 text-sm mb-6">
+              Apakah Anda yakin ingin keluar dari sesi ini? Anda harus login kembali untuk mengakses resume.
+            </p>
+
+            {/* Tombol Aksi (Iya / Tidak) */}
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowLogoutModal(false)}
+                className="flex-1 py-2.5 rounded-full border border-neutral-700 text-neutral-300 hover:bg-neutral-800 transition text-sm font-medium cursor-pointer"
+              >
+                Tidak
+              </button>
+              <button
+                onClick={() => {
+                  setShowLogoutModal(false);
+                  handleLogout();
+                }}
+                className="flex-1 py-2.5 rounded-full bg-violet-600 text-white hover:bg-violet-500 transition text-sm font-medium cursor-pointer shadow-[0_0_15px_rgba(139,92,246,0.3)]"
+              >
+                Iya, Keluar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </>
   )
 }

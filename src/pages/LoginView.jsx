@@ -3,6 +3,8 @@ import { User2Icon, Mail, Lock } from "lucide-react"
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 import api from "../configs/axios.js"
+import { Navigate } from "react-router-dom";
+
 
 
 const LoginView = () => {
@@ -11,7 +13,7 @@ const LoginView = () => {
   const [errorMsg, setErrorMsg] = useState("");
 
   const navigate = useNavigate();
-  const { setUserData } = useAuthStore();
+  const { setUserData, isAuthentication } = useAuthStore();
 
 
   const [formData, setFormData] = useState({
@@ -25,6 +27,7 @@ const LoginView = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setDisable(true);
@@ -47,7 +50,7 @@ const LoginView = () => {
     }
   };
 
-  return (
+  return !isAuthentication ? (
     <>
       <section className="bg-black w-full py-15 min-h-screen flex justify-center items-center">
         <form
@@ -148,6 +151,8 @@ const LoginView = () => {
         </div>
       </section>
     </>
+  ) :(
+    <Navigate to={"/app"} replace/>
   );
 };
 
