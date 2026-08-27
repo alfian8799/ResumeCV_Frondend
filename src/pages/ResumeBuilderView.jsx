@@ -8,6 +8,9 @@ import ExperienceForm from "../components/ExperienceForm.jsx";
 import ProjectsForm from "../components/ProjectsForm.jsx";
 import SkillsForm from "../components/SkillsForm.jsx";
 import AchievementsForm from "../components/AchievementsForm.jsx";
+import ResumePreview from "../components/ResumePreview.jsx";
+import Template2 from "../components/Template2.jsx";
+import SettingForm from "../components/SettingForm.jsx";
 
 const ResumeBuilderView = () => {
   const { resumeId } = useParams();
@@ -17,21 +20,24 @@ const ResumeBuilderView = () => {
     _id: "",
     title: "",
     summary: "",
-    template: "classic",
-    accentColor: "darkblue",
+    template: "1", // Default template diset "1" atau "classic"
+    accentColor: "#8b5cf6",
     education: [],
-    exprience: [], // (Anda mungkin ingin memperbaiki typo 'exprience' menjadi 'experiences' di masa depan sesuai skema)
+    experiences: [],
     personalInfo: {},
     project: [],
     public: false,
     skills: [],
-    achievements: [], // PENAMBAHAN: Tambahkan achievements sesuai skema Mongoose
+    achievements: [],
+    fontFamily: "Arial",
+    textSize: "Medium",
+    fontSizeNum: 14,
+    textAlign: "left",
   });
 
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
   const [removeBackground, setRemoveBackground] = useState(false);
 
-  // PENAMBAHAN: Tambahkan "Achievements" dan "Settings" ke daftar sections
   const sections = [
     { id: "personal", name: "Personal Info" },
     { id: "summary", name: "Summary" },
@@ -41,19 +47,33 @@ const ResumeBuilderView = () => {
     { id: "skills", name: "Skills" },
     { id: "achievements", name: "Achievements" },
     { id: "setting", name: "Setting" },
+    { id: "template", name: "Template" },
   ];
 
+  // FUNGSI SIMPAN PERUBAHAN KE BACKEND & DATABASE
   const handleSubmitForm = async (e) => {
     e.preventDefault();
-    console.log("Form Tersubmit:", resumeData);
+    try {
+      await api.put(`/resume/${resumeId}`, resumeData);
+      alert("Perubahan resume berhasil disimpan!");
+    } catch (error) {
+      console.error("Gagal menyimpan resume:", error);
+      alert("Gagal menyimpan perubahan ke database.");
+    }
   };
 
+  // Mengambil data awal dari database saat halaman pertama kali dimuat atau di-refresh
   useEffect(() => {
     const GetResumeDataById = async () => {
       try {
         const response = await api.get(`/resume/${resumeId}`);
-        console.log(response.data.resume);
-        setResumeData(response.data.resume);
+        const dataRes = response.data.resume;
+
+        setResumeData({
+          ...dataRes,
+          template: dataRes.template || "1",
+          experiences: dataRes.experiences || dataRes.exprience || []
+        });
       } catch (error) {
         console.log("Gagal mengambil data resume:", error);
       }
@@ -68,7 +88,7 @@ const ResumeBuilderView = () => {
     <>
       <div className={`min-h-screen text-white p-6 md:p-8 pt-28 transition-colors ${removeBackground ? 'bg-transparent' : 'bg-black'}`}>
 
-        {/* Tombol Kembali ke Dashboard (Sebagai pengganti "Navbar" pada gambar referensi jika Anda belum memiliki komponen Navbar di atasnya) */}
+        {/* Tombol Kembali & Judul Resume */}
         <div className="w-full flex items-center justify-between mb-8 border-b border-neutral-800 pb-4">
           <div>
             <button onClick={() => navigate('/app')} className="text-neutral-400 hover:text-white transition p-2 bg-neutral-900 rounded-lg cursor-pointer">
@@ -83,13 +103,10 @@ const ResumeBuilderView = () => {
           </div>
         </div>
 
-        {/* 
-          IMPLEMENTASI LAYOUT BERDASARKAN GAMBAR REFERENSI
-          Membagi layar menjadi 12 kolom (grid-cols-12) agar proporsional
-        */}
+        {/* Layout Utama Grid 12 Kolom */}
         <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
-          {/* KOLOM 1 & 2: Sidebar Menu Sections (Menu Navigasi) */}
+          {/* Kolom 1-2: Sidebar Navigasi Sections */}
           <div className="lg:col-span-2 flex flex-col gap-2">
             {sections.map((sec, index) => (
               <button
@@ -105,13 +122,11 @@ const ResumeBuilderView = () => {
             ))}
           </div>
 
-          {/* KOLOM 3: Area Input (Bagian setiap section contoh "Personal Info") */}
-          <div className="lg:col-span-4 bg-neutral-900 border border-neutral-800 rounded-xl p-6 min-h-[500px]">
+          {/* Kolom 3-6: Area Form Input */}
+          <div className="lg:col-span-4 bg-neutral-900 border border-neutral-800 rounded-xl p-6 min-h-125">
             <form onSubmit={handleSubmitForm} className="h-full flex flex-col">
 
               <div className="flex-1 mb-6">
-
-                {/* 1. BAGIAN PERSONAL INFO */}
                 {sections[activeSectionIndex]?.id === "personal" && (
                   <PersonalInfoForm
                     data={resumeData.personalInfo}
@@ -126,107 +141,130 @@ const ResumeBuilderView = () => {
                   />
                 )}
 
-
-                {/* 2. BAGIAN SUMMARY (Contoh tempat menaruh SummaryForm nantinya) */}
                 {sections[activeSectionIndex]?.id === "summary" && (
-                  <div className="h-full flex flex-col">
-                      <div className="h-full flex flex-col">
-                        <SummaryForm
-                          data={resumeData.summary}
-                          onChange={(val) => setResumeData({ ...resumeData, summary: val })}
-                        />
-                      </div>
-                  </div>
+                  <SummaryForm
+                    data={resumeData.summary}
+                    onChange={(val) => setResumeData({ ...resumeData, summary: val })}
+                  />
                 )}
 
-                {/* 3. BAGIAN EDUCATION (Pendidikan) */}
                 {sections[activeSectionIndex]?.id === "education" && (
-                  <div className="h-full flex flex-col">
-                    <div className="h-full flex flex-col">
-                      <EducationForm 
-                        data={resumeData.education} 
-                        onChange={(arr) => setResumeData({ ...resumeData, education: arr })} 
-                      /> 
-                    </div>
-                  </div>
+                  <EducationForm
+                    data={resumeData.education}
+                    onChange={(arr) => setResumeData({ ...resumeData, education: arr })}
+                  />
                 )}
 
-                {/* 4. BAGIAN EXPERIENCE (Pengalaman Kerja) */}
                 {sections[activeSectionIndex]?.id === "experience" && (
-                  <div className="h-full flex flex-col">                    
-                    <div className="h-full flex flex-col">
-                      <ExperienceForm 
-                        data={resumeData.experiences} 
-                        onChange={(arr) => setResumeData({ ...resumeData, experiences: arr })} 
-                      /> 
-                    </div>                    
-                  </div>
+                  <ExperienceForm
+                    data={resumeData.experiences}
+                    onChange={(arr) => setResumeData({ ...resumeData, experiences: arr })}
+                  />
                 )}
 
-                {/* 5. BAGIAN PROJECTS (Proyek) */}
                 {sections[activeSectionIndex]?.id === "projects" && (
-                  <div className="h-full flex flex-col">
-                    <div className="h-full flex flex-col">
-                      <ProjectsForm 
-                        data={resumeData.project || []} 
-                        onChange={(arr) => setResumeData({ ...resumeData, project: arr })} 
-                      /> 
-                    </div>
-                  </div>
+                  <ProjectsForm
+                    data={resumeData.project || []}
+                    onChange={(arr) => setResumeData({ ...resumeData, project: arr })}
+                  />
                 )}
 
-                {/* 6. BAGIAN SKILLS (Keahlian) */}
                 {sections[activeSectionIndex]?.id === "skills" && (
-                  <div className="h-full flex flex-col">
-                    <div className="h-full flex flex-col">
-                      <SkillsForm 
-                        data={resumeData.skills} 
-                        onChange={(val) => setResumeData({ ...resumeData, skills: val })} 
-                      /> 
-                    </div>
-                  </div>
+                  <SkillsForm
+                    data={resumeData.skills}
+                    onChange={(val) => setResumeData({ ...resumeData, skills: val })}
+                  />
                 )}
 
-                {/* 7. BAGIAN ACHIEVEMENTS (Penghargaan) */}
                 {sections[activeSectionIndex]?.id === "achievements" && (
-                  <div className="h-full flex flex-col">
-                    <div className="h-full flex flex-col">
-                      <AchievementsForm 
-                        data={resumeData.achievements || []} 
-                        onChange={(arr) => setResumeData({ ...resumeData, achievements: arr })} 
-                      /> 
-                    </div>
-                  </div>
+                  <AchievementsForm
+                    data={resumeData.achievements || []}
+                    onChange={(arr) => setResumeData({ ...resumeData, achievements: arr })}
+                  />
                 )}
 
-            
-                {/* 8. BAGIAN SETTINGS (Pengaturan Background, Tema, dll) */}
                 {sections[activeSectionIndex]?.id === "setting" && (
                   <div>
                     <h2 className="text-xl font-bold text-white mb-6 border-b border-neutral-800 pb-2">
                       Settings
                     </h2>
-                    
+                    <p className="text-sm text-neutral-400">Pengaturan tambahan untuk tema atau visibilitas resume.</p>
                   </div>
                 )}
+                {sections[activeSectionIndex]?.id === "setting" && (
+                  <SettingForm
+                    data={resumeData}
+                    onChange={(updatedSettings) =>
+                      setResumeData((prev) => ({
+                        ...prev,
+                        ...updatedSettings
+                      }))
+                    }
+                  />
+                )}
 
+
+                {/* Bagian Pilihan Template yang Interaktif */}
+                {sections[activeSectionIndex]?.id === "template" && (
+                  <div>
+                    <h2 className="text-xl font-bold text-white mb-6 border-b border-neutral-800 pb-2">
+                      Template Selection
+                    </h2>
+                    <p className="text-sm text-neutral-400 mb-6">Pilih templat resume profesional yang sesuai dengan gaya Anda.</p>
+
+                    <div className="grid grid-cols-1 gap-4">
+                      {/* Pilihan Template 1 */}
+                      <div
+                        onClick={() => setResumeData({ ...resumeData, template: "1" })}
+                        className={`border rounded-xl p-4 cursor-pointer transition-all ${resumeData.template === "1" ? "border-violet-500 bg-violet-500/10" : "border-neutral-800 bg-neutral-950 hover:border-neutral-700"
+                          }`}
+                      >
+                        <h3 className="text-sm font-semibold text-white">Modern Professional (Template 1)</h3>
+                        <p className="text-xs text-neutral-400 mt-1">Tata letak terpusat dengan ikon kontak yang rapi.</p>
+                      </div>
+
+                      {/* Pilihan Template 2 */}
+                      <div
+                        onClick={() => setResumeData({ ...resumeData, template: "2" })}
+                        className={`border rounded-xl p-4 cursor-pointer transition-all ${resumeData.template === "2" ? "border-violet-500 bg-violet-500/10" : "border-neutral-800 bg-neutral-950 hover:border-neutral-700"
+                          }`}
+                      >
+                        <h3 className="text-sm font-semibold text-white">Classic Corporate (Template 2)</h3>
+                        <p className="text-xs text-neutral-400 mt-1">Tata letak profesional dengan keahlian baris horizontal.</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
-              {/* Tombol Simpan (Selalu berada di paling bawah form) */}
+              {/* Tombol Simpan Perubahan */}
               <button type="submit" className="bg-violet-600 px-6 py-3 rounded-lg text-sm font-semibold cursor-pointer w-full hover:bg-violet-700 transition mt-auto">
                 Simpan Perubahan
               </button>
             </form>
           </div>
 
-          {/* KOLOM 4: Area Preview (Gambaran CV) */}
-          <div className="lg:col-span-6 bg-white rounded-xl min-h-[800px] flex items-center justify-center relative overflow-hidden">
-            {/* Kertas A4 Kosong sebagai representasi Preview CV */}
-            <div className="text-neutral-400 text-lg font-medium">
-              Gambaran CV (Preview)
-            </div>
+         {/* Kolom 7-12: Area Live Preview */}
+          <div 
+            className="lg:col-span-6 bg-neutral-200 rounded-xl h-200 flex justify-center relative overflow-y-auto custom-scrollbar border border-neutral-800 transition-all"
+            style={{
+              fontFamily: resumeData.fontFamily || "Arial",
+              textAlign: resumeData.textAlign || "left",
+              fontSize: `${(resumeData.fontSizeNum || 14) * (resumeData.textSize === "Small" ? 0.85 : resumeData.textSize === "Large" ? 1.15 : 1)}px`
+            }}      
+          >
+            {resumeData.template === "2" ? (
+              <Template2
+                data={resumeData}
+                accentColor={resumeData.accentColor || "#8b5cf6"}
+              />
+            ) : (
+              <ResumePreview
+                data={resumeData}
+                accentColor={resumeData.accentColor || "#8b5cf6"}
+              />
+            )}
           </div>
-
         </div>
 
       </div>
