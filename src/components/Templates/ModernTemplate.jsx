@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, Link2, Globe } from "lucide-react";
+import { Mail, Phone, MapPin, Link2, Globe, User } from "lucide-react";
 
 const ModernTemplate = ({ data, accentColor = "#2563eb" }) => {
   const experienceList = data.experiences || data.exprience || [];
@@ -16,8 +16,8 @@ const ModernTemplate = ({ data, accentColor = "#2563eb" }) => {
         }}
       >
         <div className="grid grid-cols-3">
-          <div className="col-span-1 py-10">
-            {/* Foto Profil */}
+          <div className="col-span-1 py-10 flex justify-center">
+            {/* Foto Profil atau Placeholder Penanda */}
             {data.personalInfo?.image && typeof data.personalInfo.image === "string" ? (
               <div className="mb-6">
                 <img
@@ -34,7 +34,13 @@ const ModernTemplate = ({ data, accentColor = "#2563eb" }) => {
                   className="w-24 h-28 object-cover rounded-md shadow-sm border border-gray-200 mx-auto"
                 />
               </div>
-            ) : null}
+            ) : (
+              /* Penanda / Placeholder Foto Kosong */
+              <div className="mb-6 w-24 h-28 rounded-md border-2 border-dashed border-gray-300 bg-gray-50 flex flex-col items-center justify-center text-gray-400 mx-auto text-center p-2">
+                <User className="w-8 h-8 mb-1 stroke-[1.5]" />
+                <span className="text-[10px] font-medium leading-tight">Foto Profil</span>
+              </div>
+            )}
           </div>
 
           {/* Name + Title */}
@@ -145,7 +151,7 @@ const ModernTemplate = ({ data, accentColor = "#2563eb" }) => {
                             {exp.position || "Nama Posisi"} <span className="font-normal text-gray-600">| {exp.company || "Nama Perusahaan"} {exp.location ? `• ${exp.location}` : ""}</span>
                           </h4>
                         </div>
-                        <span className="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                        <span className="text-xs font-semibold text-gray-500 px-2 py-1">
                           {exp.startMonth || exp.startDate || ""} {exp.startYear || ""} - {exp.isCurrent || exp.is_current ? "Sekarang" : `${exp.endMonth || exp.endDate || ""} ${exp.endYear || ""}`}
                         </span>
                       </div>
@@ -181,7 +187,7 @@ const ModernTemplate = ({ data, accentColor = "#2563eb" }) => {
                           </p>
                         </div>
                         <div className="flex flex-col items-end">
-                          <span className="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded mb-1">
+                          <span className="text-xs font-semibold text-gray-500 px-2 py-1 mb-1">
                             {edu.startDate || "Mulai"} - {edu.endDate || "Selesai"}
                           </span>
                           {edu.gpa && <span className="text-xs font-semibold text-gray-600">IPK: {edu.gpa}</span>}
@@ -197,18 +203,18 @@ const ModernTemplate = ({ data, accentColor = "#2563eb" }) => {
             )}
 
             {/* Projects */}
-            {data.project && data.project.length > 0 && (
+            {data.projects && data.projects.length > 0 && (
               <section className="mb-6">
                 <h2 className="text-sm font-bold uppercase tracking-widest border-b pb-1 mb-4 text-gray-800" style={{ color: accentColor, borderColor: accentColor }}>
                   PROJECTS
                 </h2>
                 <div className="flex flex-col gap-4">
-                  {data.project.map((proj, index) => (
+                  {data.projects.map((proj, index) => (
                     <div key={index}>
                       <div className="flex items-center gap-2 mb-1">
                         <h4 className="font-bold text-sm text-gray-800">{proj.name || "Nama Proyek"}</h4>
                         {proj.type && (
-                          <span className="text-xs px-2 py-0.5 border rounded-full text-gray-500 border-gray-300">
+                          <span className="text-xs px-2 py-0.5 text-gray-500 border-gray-300">
                             {proj.type}
                           </span>
                         )}

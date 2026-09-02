@@ -222,34 +222,34 @@ const ClassicTemplate = ({ data, accentColor = "#2563eb" }) => {
                             </section>
                         )}
 
-                        {/* ================= 7. ACHIEVEMENTS (Pencapaian) ================= */}
-                        {data.achievements && data.achievements.length > 0 && (
-                            <section>
-                                <h3 className="text-sm font-bold uppercase tracking-widest border-b pb-1 mb-4 text-gray-800" style={{ color: accentColor, borderColor: accentColor }}>
-                                    Achievements
-                                </h3>
-                                <div className="flex flex-col gap-4">
-                                    {data.achievements.map((achieve, index) => (
-                                        <div key={index}>
-                                            <div className="flex justify-between items-start">
-                                                <h4 className="font-bold text-gray-800 text-sm">{achieve.title || "Nama Pencapaian"}</h4>
-                                                <span className="text-xs text-gray-500 whitespace-nowrap ml-2">
-                                                    {achieve.date}
-                                                </span>
+                        {/* ================= ACHIEVEMENTS (Pencapaian) ================= */}
+                        {(() => {
+                            const achievements = data.achievements || [];
+                            return achievements.length > 0 && (
+                                <section>
+                                    <h3 className="text-sm font-bold uppercase tracking-widest border-b pb-1 mb-4 text-gray-800" style={{ color: accentColor, borderColor: accentColor }}>
+                                        Achievements
+                                    </h3>
+                                    <div className="flex flex-col gap-4">
+                                        {achievements.map((achievement, index) => (
+                                            <div key={achievement._id || index}>
+                                                <div className="flex justify-between items-start">
+                                                    <h4 className="font-bold text-gray-800 text-sm">{achievement.category || achievement.title || "Kategori/Judul"}</h4>
+                                                    <span className="text-xs text-gray-500 whitespace-nowrap ml-2">
+                                                        {achievement.date}
+                                                    </span>
+                                                </div>
+                                                {achievement.description && (
+                                                    <p className="text-sm text-gray-700 mt-1">
+                                                        {achievement.description}
+                                                    </p>
+                                                )}
                                             </div>
-                                            <p className="text-sm font-medium text-gray-600 mt-0.5">
-                                                {achieve.issuer || "Penyelenggara"}
-                                            </p>
-                                            {achieve.description && (
-                                                <p className="text-sm text-gray-700 mt-1">
-                                                    {achieve.description}
-                                                </p>
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
-                            </section>
-                        )}
+                                        ))}
+                                    </div>
+                                </section>
+                            );
+                        })()}
 
                     </div>
                 </div>

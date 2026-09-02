@@ -12,10 +12,7 @@ const DashboardView = () => {
   const [selectedResume, setSelectedResume] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-
-
   const navigate = useNavigate();
-
 
   // CREATE RESUME
   const handleCreateResume = async (e) => {
@@ -27,7 +24,6 @@ const DashboardView = () => {
       setShowCreateResume(false);
       setTitle("");
       getAllResume();
-
     } catch (error) {
       console.log("Gagal Menambah resume");
       const errorMessage = error.response?.data?.message || "Terjadi kesalahan pada server";
@@ -36,7 +32,7 @@ const DashboardView = () => {
   };
 
   // DELETE RESUME
-const confirmDeleteResume = async () => {
+  const confirmDeleteResume = async () => {
     if (!selectedResume) return;
     try {
       setIsDeleting(true);
@@ -53,22 +49,21 @@ const confirmDeleteResume = async () => {
     }
   };
 
-
   // GET ALL RESUME
   const getAllResume = async () => {
     const response = await api.get("/resume");
-    // console.log(response.data.resume);
     setResume(response.data.resume);
   };
+
   useEffect(() => {
     getAllResume();
   }, []);
-
 
   // OPEN CREATE RESUME
   const OpenShowCreateResume = () => {
     setShowCreateResume(true);
   };
+
   // CLOSE CREATE RESUME
   const CloseCreateResume = () => {
     setShowCreateResume(false);
@@ -80,7 +75,7 @@ const confirmDeleteResume = async () => {
       <div className="min-h-screen bg-black text-white flex flex-col pt-20">
         {/* Konten Utama Dashboard */}
         <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
-
+          
           {/* Bagian Sambutan & Tombol Buat CV Baru */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
             <div>
@@ -93,59 +88,67 @@ const confirmDeleteResume = async () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
             {/* looping data resume dari database */}
-            {resume.map((item, index) => (
-              <div 
-              key={item._id || index}
-              
-              className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 flex flex-col justify-between h-64 hover:border-violet-500/50 transition-all group">
-                <div>
-                  <div className="flex justify-between items-start">
-                    <span className="text-xs bg-violet-500/20 text-violet-400 px-3 py-1 rounded-full font-medium">ATS-Friendly</span>
+            {resume.map((item, index) => {
+              // Mengamankan data skills jika berupa array objek atau string
+              const skillsArray = Array.isArray(item.skills) 
+                ? item.skills.map(s => typeof s === 'object' ? (s.category || s.description) : s).join(", ") 
+                : item.skills || "-";
 
-                    {/*  tanggal pembuatan cv*/}
-                    <span className="text-xs text-white/40">
-                      {new Date(item.createdAt).toLocaleDateString('id-ID', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric'
-                      })} - {new Date(item.createdAt).toLocaleTimeString('id-ID', {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </span>
+              return (
+                <div 
+                  key={item._id || index}
+                  className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 flex flex-col justify-between h-64 hover:border-violet-500/50 transition-all group"
+                >
+                  <div>
+                    <div className="flex justify-between items-start">
+                      <span className="text-xs bg-violet-500/20 text-violet-400 px-3 py-1 rounded-full font-medium">ATS-Friendly</span>
+
+                      {/* tanggal pembuatan cv */}
+                      <span className="text-xs text-white/40">
+                        {new Date(item.createdAt).toLocaleDateString('id-ID', {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric'
+                        })} - {new Date(item.createdAt).toLocaleTimeString('id-ID', {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </span>
+                    </div>
+                    <h3 className="text-lg font-semibold text-white mt-4 group-hover:text-violet-400 transition-colors">{item.title}</h3>
+
+                    {/* skills */}
+                    <p className="text-xs text-white/50 mt-1 truncate">Skills: {skillsArray}</p>
                   </div>
-                  <h3 className="text-lg font-semibold text-white mt-4 group-hover:text-violet-400 transition-colors">{item.title}</h3>
 
-                  {/* skills */}
-                  <p className="text-xs text-white/50 mt-1 truncate">Skills: {item.skills}</p>
-                </div>
-
-                {/* button edit, delete, download */}
-                <div className="flex items-center gap-2 pt-4 border-t border-neutral-800">
-                  <button 
-                  onClick={() => navigate(`/app/builder/${item._id}`)}
-                  className="flex-1 bg-white/10 hover:bg-white/20 text-white text-xs py-2 rounded-lg transition cursor-pointer">
-                    Edit
+                  {/* button edit, delete, download */}
+                  <div className="flex items-center gap-2 pt-4 border-t border-neutral-800">
+                    <button 
+                      onClick={() => navigate(`/app/builder/${item._id}`)}
+                      className="flex-1 bg-white/10 hover:bg-white/20 text-white text-xs py-2 rounded-lg transition cursor-pointer"
+                    >
+                      Edit
                     </button>
-                  <button 
-                    onClick={() => {
-                      setSelectedResume(item);
-                      setShowDeleteModal(true);
-                    }} 
-                    className="flex-1 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs py-2 rounded-lg transition cursor-pointer"
-                  >
-                    Delete
-                  </button>
-                  <button 
-                  className="flex-1 bg-violet-600 hover:bg-violet-700 text-white text-xs py-2 rounded-lg transition cursor-pointer">
-                    Download
-                  </button>
+                    <button 
+                      onClick={() => {
+                        setSelectedResume(item);
+                        setShowDeleteModal(true);
+                      }} 
+                      className="flex-1 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs py-2 rounded-lg transition cursor-pointer"
+                    >
+                      Delete
+                    </button>
+                    <button 
+                      className="flex-1 bg-violet-600 hover:bg-violet-700 text-white text-xs py-2 rounded-lg transition cursor-pointer"
+                    >
+                      Download
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
 
-
-            {/* Kartu Tambah CV Cepat (Shortcut Card) - Dipasangkan onClick */}
+            {/* Kartu Tambah CV Cepat (Shortcut Card) */}
             <div
               onClick={OpenShowCreateResume}
               className="border-2 border-dashed border-neutral-800 hover:border-violet-500/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center h-64 cursor-pointer transition-all group"
@@ -204,11 +207,10 @@ const confirmDeleteResume = async () => {
       )}
 
       {/* POP-UP Konfirmasi Delete Resume */}
-    {showDeleteModal && selectedResume && (
+      {showDeleteModal && selectedResume && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm px-4">
           <div className="bg-neutral-900 border border-neutral-800 rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl animate-in fade-in zoom-in duration-200">
             
-            {/* Ikon Peringatan Sampah/Hapus */}
             <div className="mx-auto w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 mb-4">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="3 6 5 6 21 6"></polyline>
@@ -218,13 +220,11 @@ const confirmDeleteResume = async () => {
               </svg>
             </div>
 
-            {/* Teks Konfirmasi dengan Nama Resume */}
             <h3 className="text-white text-lg font-semibold mb-2">Hapus Resume?</h3>
             <p className="text-neutral-400 text-sm mb-6">
               Apakah Anda yakin ingin menghapus resume dengan nama: <span className="text-white font-semibold">"{selectedResume.title}"</span>?
             </p>
 
-            {/* Tombol Aksi (Tidak & Iya, Yakin) dengan Animasi Loading */}
             <div className="flex gap-3">
               <button
                 type="button"
@@ -245,7 +245,6 @@ const confirmDeleteResume = async () => {
               >
                 {isDeleting ? (
                   <>
-                    {/* SVG Animasi Spinner Berputar */}
                     <svg className="animate-spin size-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -262,7 +261,7 @@ const confirmDeleteResume = async () => {
         </div>
       )}
     </>
-  )
-}
+  );
+};
 
 export default DashboardView;

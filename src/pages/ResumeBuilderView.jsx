@@ -11,9 +11,13 @@ import AchievementsForm from "../components/AchievementsForm.jsx";
 import ResumePreview from "../components/ResumePreview.jsx";
 import SettingForm from "../components/SettingForm.jsx";
 
+
+
 const ResumeBuilderView = () => {
   const { resumeId } = useParams();
   const navigate = useNavigate();
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
 
   const [resumeData, setResumeData] = useState({
     _id: "",
@@ -24,7 +28,7 @@ const ResumeBuilderView = () => {
     education: [],
     experiences: [],
     personalInfo: {},
-    project: [],
+    projects: [],
     public: false,
     skills: [],
     achievements: [],
@@ -52,23 +56,56 @@ const ResumeBuilderView = () => {
   // FUNGSI SIMPAN PERUBAHAN KE BACKEND & DATABASE
   const handleSubmitForm = async (e) => {
     e.preventDefault();
+
     try {
-      const formData = new FormData(e.target);
-      formData.append("resumeData", JSON.stringify(resumeData));
-      removeBackground && formData.append("removeBackground", true);
-      typeof resumeData.personalInfo.image === "object" && formData.append("image  ", resumeData.image);
+      const formData = new FormData();
+
+      formData.append(
+        "resumeData",
+        JSON.stringify({
+          ...resumeData,
+          projects: resumeData.projects || [],
+        })
+      );
+
+      if (removeBackground) {
+        formData.append("removeBackground", "true");
+      }
+
+      if (resumeData.personalInfo?.image instanceof File) {
+        formData.append("image", resumeData.personalInfo.image);
+      }
+
       const response = await api.put(`/resume/${resumeId}`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+          "Content-Type": "multipart/form-data",
+        },
       });
-      setResumeData(response.data.resume);
 
-      alert("Perubahan resume berhasil disimpan!");
+      const savedResume = response.data.resume || response.data;
+
+      setResumeData((previous) => ({
+        ...previous,
+        ...savedResume,
+        projects: savedResume.projects || previous.projects || [],
+      }));
+
+      // Ubah bagian alert sukses menjadi pemanggilan toast
+      setToastMessage("Perubahan resume berhasil disimpan!");
+      setShowToast(true);
+      setTimeout(() => {
+        setShowToast(false);
+      }, 3000);
 
     } catch (error) {
       console.error("Gagal menyimpan resume:", error);
-      alert("Gagal menyimpan perubahan ke database.");
+
+      setToastMessage("Gagal menyimpan perubahan ke database.");
+      setShowToast(true);
+      setTimeout(() => {
+        setShowToast(false);
+      }, 3000);
+
     }
   };
 
@@ -82,7 +119,8 @@ const ResumeBuilderView = () => {
         setResumeData({
           ...dataRes,
           template: dataRes.template || "1",
-          experiences: dataRes.experiences || dataRes.exprience || []
+          experiences: dataRes.experiences || dataRes.exprience || [],
+          projects: dataRes.projects || []
         });
       } catch (error) {
         console.log("Gagal mengambil data resume:", error);
@@ -139,11 +177,11 @@ const ResumeBuilderView = () => {
               <div className="flex-1 mb-6">
                 {sections[activeSectionIndex]?.id === "personal" && (
                   <PersonalInfoForm
-                    data={resumeData.personalInfo}
-                    onChange={(data) =>
-                      setResumeData((prev) => ({
-                        ...prev,
-                        personalInfo: data
+                    data={resumeData.personalInfo || {}}
+                    onChange={(personalInfo) =>
+                      setResumeData((previous) => ({
+                        ...previous,
+                        personalInfo,
                       }))
                     }
                     removeBackground={removeBackground}
@@ -174,8 +212,8 @@ const ResumeBuilderView = () => {
 
                 {sections[activeSectionIndex]?.id === "projects" && (
                   <ProjectsForm
-                    data={resumeData.project || []}
-                    onChange={(arr) => setResumeData({ ...resumeData, project: arr })}
+                    data={resumeData.projects || []}
+                    onChange={(arr) => setResumeData({ ...resumeData, projects: arr })}
                   />
                 )}
 
@@ -227,8 +265,8 @@ const ResumeBuilderView = () => {
                       <div
                         onClick={() => setResumeData({ ...resumeData, template: "modern" })}
                         className={`border rounded-xl p-4 cursor-pointer transition-all ${resumeData.template === "modern" || resumeData.template === "1"
-                            ? "border-violet-500 bg-violet-500/10"
-                            : "border-neutral-800 bg-neutral-950 hover:border-neutral-700"
+                          ? "border-violet-500 bg-violet-500/10"
+                          : "border-neutral-800 bg-neutral-950 hover:border-neutral-700"
                           }`}
                       >
                         <h3 className="text-sm font-semibold text-white">Modern Template</h3>
@@ -239,8 +277,8 @@ const ResumeBuilderView = () => {
                       <div
                         onClick={() => setResumeData({ ...resumeData, template: "classic" })}
                         className={`border rounded-xl p-4 cursor-pointer transition-all ${resumeData.template === "classic" || resumeData.template === "2"
-                            ? "border-violet-500 bg-violet-500/10"
-                            : "border-neutral-800 bg-neutral-950 hover:border-neutral-700"
+                          ? "border-violet-500 bg-violet-500/10"
+                          : "border-neutral-800 bg-neutral-950 hover:border-neutral-700"
                           }`}
                       >
                         <h3 className="text-sm font-semibold text-white">Classic Corporate</h3>
@@ -269,6 +307,13 @@ const ResumeBuilderView = () => {
             />
           </div>
         </div>
+        {/* Komponen Toast Popup */}
+        {showToast && (
+          <div className="fixed bottom-6 right-6 z-50 bg-neutral-900 border border-neutral-700 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-fade-in-up transition-all">
+            <div className="w-2 h-2 rounded-full bg-violet-500 animate-pulse"></div>
+            <p className="text-sm font-medium">{toastMessage}</p>
+          </div>
+        )}
 
       </div>
     </>
