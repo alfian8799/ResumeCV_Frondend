@@ -3,6 +3,7 @@ import { Mail, Phone, MapPin, Link, ExternalLink } from 'lucide-react';
 const ClassicTemplate = ({ data, accentColor = "#2563eb" }) => {
     const experienceList = data.experiences || data.exprience || [];
     const projectList = data.projects || data.project || [];
+    const achievementList = data.achievements || [];
 
     return (
         <div className="w-full flex justify-center bg-neutral-100 p-4 md:p-8">
@@ -222,34 +223,40 @@ const ClassicTemplate = ({ data, accentColor = "#2563eb" }) => {
                             </section>
                         )}
 
-                        {/* ================= ACHIEVEMENTS (Pencapaian) ================= */}
-                        {(() => {
-                            const achievements = data.achievements || [];
-                            return achievements.length > 0 && (
-                                <section>
-                                    <h3 className="text-sm font-bold uppercase tracking-widest border-b pb-1 mb-4 text-gray-800" style={{ color: accentColor, borderColor: accentColor }}>
-                                        Achievements
-                                    </h3>
-                                    <div className="flex flex-col gap-4">
-                                        {achievements.map((achievement, index) => (
-                                            <div key={achievement._id || index}>
-                                                <div className="flex justify-between items-start">
-                                                    <h4 className="font-bold text-gray-800 text-sm">{achievement.category || achievement.title || "Kategori/Judul"}</h4>
+                        {/* ================= 7. ACHIEVEMENTS (Pencapaian) ================= */}
+                        {achievementList.length > 0 && (
+                            <section>
+                                <h3 className="text-sm font-bold uppercase tracking-widest border-b pb-1 mb-4 text-gray-800" style={{ color: accentColor, borderColor: accentColor }}>
+                                    Achievements
+                                </h3>
+                                <div className="flex flex-col gap-4">
+                                    {achievementList.map((achievement, index) => (
+                                        <div key={achievement._id || index}>
+                                            <div className="flex justify-between items-start">
+                                                <h4 className="font-bold text-gray-800 text-sm">
+                                                    {achievement.category || achievement.title || "Nama Pencapaian"}
+                                                </h4>
+                                                {achievement.date && (
                                                     <span className="text-xs text-gray-500 whitespace-nowrap ml-2">
                                                         {achievement.date}
                                                     </span>
-                                                </div>
-                                                {achievement.description && (
-                                                    <p className="text-sm text-gray-700 mt-1">
-                                                        {achievement.description}
-                                                    </p>
                                                 )}
                                             </div>
-                                        ))}
-                                    </div>
-                                </section>
-                            );
-                        })()}
+                                            {achievement.issuer && (
+                                                <p className="text-sm font-medium text-gray-600 mt-0.5">
+                                                    {achievement.issuer}
+                                                </p>
+                                            )}
+                                            {achievement.description && (
+                                                <p className="text-sm text-gray-700 mt-1">
+                                                    {achievement.description}
+                                                </p>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
 
                     </div>
                 </div>
