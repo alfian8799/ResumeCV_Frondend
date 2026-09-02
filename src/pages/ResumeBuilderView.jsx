@@ -9,7 +9,6 @@ import ProjectsForm from "../components/ProjectsForm.jsx";
 import SkillsForm from "../components/SkillsForm.jsx";
 import AchievementsForm from "../components/AchievementsForm.jsx";
 import ResumePreview from "../components/ResumePreview.jsx";
-import Template2 from "../components/Template2.jsx";
 import SettingForm from "../components/SettingForm.jsx";
 
 const ResumeBuilderView = () => {
@@ -54,8 +53,19 @@ const ResumeBuilderView = () => {
   const handleSubmitForm = async (e) => {
     e.preventDefault();
     try {
-      await api.put(`/resume/${resumeId}`, resumeData);
+      const formData = new FormData(e.target);
+      formData.append("resumeData", JSON.stringify(resumeData));
+      removeBackground && formData.append("removeBackground", true);
+      typeof resumeData.personalInfo.image === "object" && formData.append("image  ", resumeData.image);
+      const response = await api.put(`/resume/${resumeId}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      setResumeData(response.data.resume);
+
       alert("Perubahan resume berhasil disimpan!");
+
     } catch (error) {
       console.error("Gagal menyimpan resume:", error);
       alert("Gagal menyimpan perubahan ke database.");
@@ -113,8 +123,8 @@ const ResumeBuilderView = () => {
                 key={sec.id}
                 onClick={() => setActiveSectionIndex(index)}
                 className={`text-left px-4 py-3 border rounded-md text-sm font-medium transition cursor-pointer ${activeSectionIndex === index
-                    ? 'bg-violet-600 border-violet-500 text-white'
-                    : 'bg-transparent border-neutral-700 text-neutral-400 hover:border-neutral-500'
+                  ? 'bg-violet-600 border-violet-500 text-white'
+                  : 'bg-transparent border-neutral-700 text-neutral-400 hover:border-neutral-500'
                   }`}
               >
                 {sec.name}
@@ -213,24 +223,28 @@ const ResumeBuilderView = () => {
                     <p className="text-sm text-neutral-400 mb-6">Pilih templat resume profesional yang sesuai dengan gaya Anda.</p>
 
                     <div className="grid grid-cols-1 gap-4">
-                      {/* Pilihan Template 1 */}
+                      {/* Pilihan Template Modern */}
                       <div
-                        onClick={() => setResumeData({ ...resumeData, template: "1" })}
-                        className={`border rounded-xl p-4 cursor-pointer transition-all ${resumeData.template === "1" ? "border-violet-500 bg-violet-500/10" : "border-neutral-800 bg-neutral-950 hover:border-neutral-700"
+                        onClick={() => setResumeData({ ...resumeData, template: "modern" })}
+                        className={`border rounded-xl p-4 cursor-pointer transition-all ${resumeData.template === "modern" || resumeData.template === "1"
+                            ? "border-violet-500 bg-violet-500/10"
+                            : "border-neutral-800 bg-neutral-950 hover:border-neutral-700"
                           }`}
                       >
-                        <h3 className="text-sm font-semibold text-white">Modern Professional (Template 1)</h3>
-                        <p className="text-xs text-neutral-400 mt-1">Tata letak terpusat dengan ikon kontak yang rapi.</p>
+                        <h3 className="text-sm font-semibold text-white">Modern Template</h3>
+                        <p className="text-xs text-neutral-400 mt-1">Tata letak dua kolom dengan sidebar modern dan foto profil.</p>
                       </div>
 
-                      {/* Pilihan Template 2 */}
+                      {/* Pilihan Template Classic / Template 2 */}
                       <div
-                        onClick={() => setResumeData({ ...resumeData, template: "2" })}
-                        className={`border rounded-xl p-4 cursor-pointer transition-all ${resumeData.template === "2" ? "border-violet-500 bg-violet-500/10" : "border-neutral-800 bg-neutral-950 hover:border-neutral-700"
+                        onClick={() => setResumeData({ ...resumeData, template: "classic" })}
+                        className={`border rounded-xl p-4 cursor-pointer transition-all ${resumeData.template === "classic" || resumeData.template === "2"
+                            ? "border-violet-500 bg-violet-500/10"
+                            : "border-neutral-800 bg-neutral-950 hover:border-neutral-700"
                           }`}
                       >
-                        <h3 className="text-sm font-semibold text-white">Classic Corporate (Template 2)</h3>
-                        <p className="text-xs text-neutral-400 mt-1">Tata letak profesional dengan keahlian baris horizontal.</p>
+                        <h3 className="text-sm font-semibold text-white">Classic Corporate</h3>
+                        <p className="text-xs text-neutral-400 mt-1">Tata letak profesional dengan header terpusat yang rapi.</p>
                       </div>
                     </div>
                   </div>
@@ -244,26 +258,15 @@ const ResumeBuilderView = () => {
             </form>
           </div>
 
-         {/* Kolom 7-12: Area Live Preview */}
-          <div 
-            className="lg:col-span-6 bg-neutral-200 rounded-xl h-200 flex justify-center relative overflow-y-auto custom-scrollbar border border-neutral-800 transition-all"
-            style={{
-              fontFamily: resumeData.fontFamily || "Arial",
-              textAlign: resumeData.textAlign || "left",
-              fontSize: `${(resumeData.fontSizeNum || 14) * (resumeData.textSize === "Small" ? 0.85 : resumeData.textSize === "Large" ? 1.15 : 1)}px`
-            }}      
-          >
-            {resumeData.template === "2" ? (
-              <Template2
-                data={resumeData}
-                accentColor={resumeData.accentColor || "#8b5cf6"}
-              />
-            ) : (
-              <ResumePreview
-                data={resumeData}
-                accentColor={resumeData.accentColor || "#8b5cf6"}
-              />
-            )}
+          {/* Kolom 7-12: Area Live Preview */}
+          <div
+            className="lg:col-span-6 bg-neutral-100 rounded-xl h-200 flex justify-center relative overflow-y-auto custom-scrollbar border border-neutral-800 transition-all">
+            <div></div>
+            <ResumePreview
+              data={resumeData}
+              template={resumeData.template}
+              accentColor={resumeData.accentColor || "#8b5cf6"}
+            />
           </div>
         </div>
 
