@@ -20,6 +20,7 @@ const ResumePreview = ({ data, template, accentColor = "#8b5cf6" }) => {
             {/* Kertas Resume (ukuran A4 proporsional) */}
             <div
                 id="preview-resume"
+                className="w-full max-w-[210mm] min-w-0"
                 style={{
                     fontFamily: data.fontFamily || "Arial",
                     textAlign: data.textAlign || "left",
