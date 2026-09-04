@@ -31,20 +31,33 @@ const LoginView = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setDisable(true);
+    setErrorMsg("");
+
     try {
+      let response;
+
       if (state === "login") {
-        const response = await api.post("/auth/login", formData);
+        response = await api.post("/auth/login", formData);
         alert("Login Success");
-        setUserData(response.data.user);
-        navigate("/app");
       } else {
-        const response = await api.post("/auth/register", formData);
+        response = await api.post("/auth/register", formData);
         alert("Register Success");
-        setUserData(response.data.user);
-        navigate("/app");
       }
+
+      const user = response?.data?.user;
+      if (user) {
+        setUserData(user);
+      }
+
+      navigate("/app");
     } catch (error) {
-      setErrorMsg(error.response.data.message);
+      console.error("Auth request failed:", error);
+      const message =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
+        "Request failed. Please try again.";
+      setErrorMsg(message);
     } finally {
       setDisable(false);
     }
