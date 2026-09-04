@@ -411,7 +411,7 @@ const ResumeBuilderView = () => {
               </div>
             </div>
 
-            <div className="resume-builder-preview print:static print:h-auto print:min-h-0 print:overflow-visible print:block print:bg-white print:border-0 print:rounded-none bg-neutral-100 rounded-xl h-200 flex justify-center relative overflow-y-auto custom-scrollbar border border-neutral-800 transition-all w-full">
+            <div className="resume-builder-preview print:static print:h-auto print:min-h-0 print:overflow-visible print:block print:bg-white print:border-0 print:rounded-none bg-neutral-100 rounded-xl min-h-[297mm] flex justify-center relative overflow-y-auto custom-scrollbar border border-neutral-800 transition-all w-full">
               <ResumePreview
                 data={resumeData}
                 template={resumeData.template}

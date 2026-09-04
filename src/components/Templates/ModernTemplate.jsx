@@ -38,8 +38,12 @@ const ModernTemplate = ({ data, accentColor = "#2563eb" }) => {
     <div className="w-full flex justify-center bg-neutral-100 p-4 md:p-8">
       <div
         id="preview-modern-template"
-        className="resume-preview w-full max-w-[210mm] min-h-[297mm] bg-white text-zinc-800 shadow-xl print:shadow-none print:m-0"
+        className="resume-preview w-full max-w-[210mm] min-h-[297mm] h-[297mm] bg-white text-zinc-800 shadow-xl print:shadow-none print:m-0"
         style={{
+          width: '100%',
+          maxWidth: '210mm',
+          minHeight: '297mm',
+          height: '297mm',
           fontFamily: data.fontFamily || "Arial",
           textAlign: data.textAlign || "left",
           lineHeight,

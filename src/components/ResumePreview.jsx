@@ -22,6 +22,10 @@ const ResumePreview = ({ data, template, accentColor = "#8b5cf6" }) => {
                 id="preview-resume"
                 className="w-full max-w-[210mm] min-w-0"
                 style={{
+                    width: '100%',
+                    maxWidth: '210mm',
+                    minHeight: '297mm',
+                    aspectRatio: '210 / 297',
                     fontFamily: data.fontFamily || "Arial",
                     textAlign: data.textAlign || "left",
                     lineHeight: data.lineSpacing === "tight" ? "1.2" : data.lineSpacing === "relaxed" ? "1.8" : "1.5",
