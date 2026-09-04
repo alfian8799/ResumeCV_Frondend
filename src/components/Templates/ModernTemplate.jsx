@@ -1,18 +1,51 @@
 import { Mail, Phone, MapPin, Link2, Globe, User } from "lucide-react";
 
+const ResponsibilityPoints = ({ value }) => {
+  const points = value.split(/\r?\n/).map((point) => point.replace(/^[•\-*]\s*/, '').trim()).filter(Boolean);
+
+  return (
+    <div className="flex flex-col gap-1.5 text-sm text-gray-700 mt-1.5">
+      {points.map((point, index) => (
+        <div key={index} className="flex items-start gap-2">
+          <span className="shrink-0">•</span>
+          <span className="min-w-0 flex-1">{point}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const ModernTemplate = ({ data, accentColor = "#2563eb" }) => {
   const experienceList = data.experiences || data.exprience || [];
+  const defaultSectionOrder = ["experience", "education", "projects", "skills", "achievements"];
+  const savedOrder = data.layout?.sectionOrder || [];
+  const sectionOrder = [
+    ...savedOrder,
+    ...defaultSectionOrder.filter((section) => !savedOrder.includes(section)),
+  ];
+  const sectionLayouts = data.layout?.sectionLayouts || {};
+  const textSizeScale = { Small: 0.88, Medium: 1, Large: 1.12 };
+  const baseFontSize = 14 * (textSizeScale[data.textSize] || 1);
+  const lineHeight = data.lineSpacing === "tight" ? "1.2" : data.lineSpacing === "relaxed" ? "1.8" : "1.5";
+  const sectionStyle = (section) => sectionLayouts[section] || "standard";
+  const sectionOrderStyle = (section) => ({ order: sectionOrder.indexOf(section) + 1 });
+  const contentClass = (section) => sectionStyle(section) === "two-column"
+    ? "grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3"
+    : sectionStyle(section) === "compact" ? "flex flex-col gap-2" : "flex flex-col gap-4";
+  const sectionSpacing = (section) => sectionStyle(section) === "compact" ? "mb-3" : "mb-6";
 
   return (
     <div className="w-full flex justify-center bg-neutral-100 p-4 md:p-8">
-      <div 
+      <div
         id="preview-modern-template"
-        className="w-full max-w-[210mm] min-h-[297mm] bg-white text-zinc-800 shadow-xl print:shadow-none print:m-0"
+        className="resume-preview w-full max-w-[210mm] min-h-[297mm] bg-white text-zinc-800 shadow-xl print:shadow-none print:m-0"
         style={{
           fontFamily: data.fontFamily || "Arial",
           textAlign: data.textAlign || "left",
-          lineHeight: data.lineSpacing === "tight" ? "1.2" : data.lineSpacing === "relaxed" ? "1.8" : "1.5",
-          fontSize: `${data.fontSizeNum || 14}px`
+          lineHeight,
+          fontSize: `${baseFontSize}px`,
+          "--resume-base-size": `${baseFontSize}px`,
+          "--resume-line-height": lineHeight,
         }}
       >
         <div className="grid grid-cols-3">
@@ -102,11 +135,11 @@ const ModernTemplate = ({ data, accentColor = "#2563eb" }) => {
 
             {/* Skills */}
             {data.skills && data.skills.length > 0 && (
-              <section>
+              <section className={sectionSpacing("skills")} style={sectionOrderStyle("skills")}>
                 <h2 className="text-sm font-bold uppercase tracking-widest border-b pb-1 mb-3 text-gray-800" style={{ color: accentColor, borderColor: accentColor }}>
                   SKILLS
                 </h2>
-                <div className="space-y-2 text-xs text-gray-700">
+                <div className={sectionStyle("skills") === "two-column" ? "grid grid-cols-2 gap-x-3 gap-y-2 text-xs text-gray-700" : "space-y-2 text-xs text-gray-700"}>
                   {data.skills.map((skill, index) => (
                     <div key={index}>
                       {typeof skill === 'object' ? (
@@ -125,7 +158,7 @@ const ModernTemplate = ({ data, accentColor = "#2563eb" }) => {
           </aside>
 
           {/* Right Content */}
-          <main className="col-span-2 p-8 pt-0">
+          <main className="col-span-2 p-8 pt-0 flex flex-col">
             {/* Summary */}
             {data.summary && (
               <section className="mb-6">
@@ -138,11 +171,11 @@ const ModernTemplate = ({ data, accentColor = "#2563eb" }) => {
 
             {/* Experience */}
             {experienceList.length > 0 && (
-              <section className="mb-6">
+              <section className={sectionSpacing("experience")} style={sectionOrderStyle("experience")}>
                 <h2 className="text-sm font-bold uppercase tracking-widest border-b pb-1 mb-4 text-gray-800" style={{ color: accentColor, borderColor: accentColor }}>
                   EXPERIENCE
                 </h2>
-                <div className="flex flex-col gap-4">
+                <div className={contentClass("experience")}>
                   {experienceList.map((exp, index) => (
                     <div key={index}>
                       <div className="flex justify-between items-start mb-1">
@@ -159,7 +192,7 @@ const ModernTemplate = ({ data, accentColor = "#2563eb" }) => {
                         <p className="text-xs text-gray-500 italic mt-1">{exp.companyDescription}</p>
                       )}
                       {exp.responsibilities && (
-                        <p className="text-sm text-gray-700 whitespace-pre-line mt-1.5 text-justify">{exp.responsibilities}</p>
+                        <ResponsibilityPoints value={exp.responsibilities} />
                       )}
                       {exp.description && !exp.responsibilities && (
                         <p className="text-sm text-gray-700 whitespace-pre-line mt-1.5 text-justify">{exp.description}</p>
@@ -172,11 +205,11 @@ const ModernTemplate = ({ data, accentColor = "#2563eb" }) => {
 
             {/* Education */}
             {data.education && data.education.length > 0 && (
-              <section className="mb-6">
+              <section className={sectionSpacing("education")} style={sectionOrderStyle("education")}>
                 <h2 className="text-sm font-bold uppercase tracking-widest border-b pb-1 mb-4 text-gray-800" style={{ color: accentColor, borderColor: accentColor }}>
                   EDUCATION
                 </h2>
-                <div className="flex flex-col gap-4">
+                <div className={contentClass("education")}>
                   {data.education.map((edu, index) => (
                     <div key={index}>
                       <div className="flex justify-between items-start mb-1">
@@ -204,11 +237,11 @@ const ModernTemplate = ({ data, accentColor = "#2563eb" }) => {
 
             {/* Projects */}
             {data.projects && data.projects.length > 0 && (
-              <section className="mb-6">
+              <section className={sectionSpacing("projects")} style={sectionOrderStyle("projects")}>
                 <h2 className="text-sm font-bold uppercase tracking-widest border-b pb-1 mb-4 text-gray-800" style={{ color: accentColor, borderColor: accentColor }}>
                   PROJECTS
                 </h2>
-                <div className="flex flex-col gap-4">
+                <div className={contentClass("projects")}>
                   {data.projects.map((proj, index) => (
                     <div key={index}>
                       <div className="flex items-center gap-2 mb-1">
@@ -228,33 +261,33 @@ const ModernTemplate = ({ data, accentColor = "#2563eb" }) => {
               </section>
             )}
             {/* ================= 7. ACHIEVEMENTS (Pencapaian) ================= */}
-                        {data.achievements && data.achievements.length > 0 && (
-                            <section>
-                                <h3 className="text-sm font-bold uppercase tracking-widest border-b pb-1 mb-4 text-gray-800" style={{ color: accentColor, borderColor: accentColor }}>
-                                    Achievements
-                                </h3>
-                                <div className="flex flex-col gap-4">
-                                    {data.achievements.map((achieve, index) => (
-                                        <div key={index}>
-                                            <div className="flex justify-between items-start">
-                                                <h4 className="font-bold text-gray-800 text-sm">{achieve.title || "Nama Pencapaian"}</h4>
-                                                <span className="text-xs text-gray-500 whitespace-nowrap ml-2">
-                                                    {achieve.date}
-                                                </span>
-                                            </div>
-                                            <p className="text-sm font-medium text-gray-600 mt-0.5">
-                                                {achieve.issuer || "Penyelenggara"}
-                                            </p>
-                                            {achieve.description && (
-                                                <p className="text-sm text-gray-700 mt-1">
-                                                    {achieve.description}
-                                                </p>
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
-                            </section>
-                        )}
+            {data.achievements && data.achievements.length > 0 && (
+              <section className={sectionSpacing("achievements")} style={sectionOrderStyle("achievements")}>
+                <h3 className="text-sm font-bold uppercase tracking-widest border-b pb-1 mb-4 text-gray-800" style={{ color: accentColor, borderColor: accentColor }}>
+                  Achievements
+                </h3>
+                <div className={contentClass("achievements")}>
+                  {data.achievements.map((achieve, index) => (
+                    <div key={index}>
+                      <div className="flex justify-between items-start">
+                        <h4 className="font-bold text-gray-800 text-sm">{achieve.title || "Nama Pencapaian"}</h4>
+                        <span className="text-xs text-gray-500 whitespace-nowrap ml-2">
+                          {achieve.date}
+                        </span>
+                      </div>
+                      <p className="text-sm font-medium text-gray-600 mt-0.5">
+                        {achieve.issuer || "Penyelenggara"}
+                      </p>
+                      {achieve.description && (
+                        <p className="text-sm text-gray-700 mt-1">
+                          {achieve.description}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
           </main>
         </div>
       </div>

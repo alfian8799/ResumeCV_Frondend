@@ -1,9 +1,15 @@
-import { Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { ChevronDown, ChevronUp, Plus, Trash2, Briefcase } from "lucide-react";
 
 const ExperienceForm = ({
   data = [],
   onChange
 }) => {
+  const [expandedItems, setExpandedItems] = useState({});
+
+  const toggleItem = (index) => {
+    setExpandedItems((previous) => ({ ...previous, [index]: !previous[index] }));
+  };
 
   const handleAddExperience = () => {
     const newExperience = {
@@ -35,7 +41,9 @@ const ExperienceForm = ({
   return (
     <div className="flex flex-col gap-5 w-full">
       <div className="border-b border-neutral-800 pb-2 mb-2">
-        <h3 className="text-lg font-semibold text-white">Experience</h3>
+        <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+          <Briefcase className="size-5 text-violet-500" /> Experience
+        </h3>
         <p className="text-xs text-neutral-500 mt-1">Tambahkan riwayat pengalaman kerja atau magang Anda.</p>
       </div>
 
@@ -43,20 +51,20 @@ const ExperienceForm = ({
         {data.map((exp, index) => (
           <div key={index} className="bg-neutral-950 border border-neutral-800 p-5 rounded-xl relative group">
 
-            {/* Tombol Hapus */}
-            <button
-              type="button"
-              onClick={() => handleDeleteExperience(index)}
-              className="absolute top-4 right-4 text-neutral-500 hover:text-red-500 transition-colors cursor-pointer"
-              title="Hapus Pengalaman"
-            >
-              <Trash2 className="size-4" />
-            </button>
-
-            <h4 className="text-sm font-semibold text-violet-400 mb-4">Pengalaman #{index + 1}</h4>
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <h4 className="text-sm font-semibold text-violet-400">Pengalaman #{index + 1}</h4>
+              <div className="flex items-center gap-2">
+                <button type="button" onClick={() => handleDeleteExperience(index)} className="text-neutral-500 hover:text-red-500 transition-colors cursor-pointer" title="Hapus Pengalaman">
+                  <Trash2 className="size-4" />
+                </button>
+                <button type="button" onClick={() => toggleItem(index)} className="text-neutral-400 hover:text-white transition-colors" title={expandedItems[index] ? "Tutup Pengalaman" : "Buka Pengalaman"}>
+                  {expandedItems[index] ? <ChevronUp className="size-5" /> : <ChevronDown className="size-5" />}
+                </button>
+              </div>
+            </div>
 
             {/* Form Input Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {expandedItems[index] && <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
               {/* Nama Perusahaan & Jabatan (Sejajar) */}
               <div className="flex flex-col gap-1.5">
@@ -201,7 +209,7 @@ const ExperienceForm = ({
                 </p>
               </div>
 
-            </div>
+            </div>}
           </div>
         ))}
       </div>

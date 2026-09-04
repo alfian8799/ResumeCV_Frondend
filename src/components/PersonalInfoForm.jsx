@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { User, Upload, Trash2, Wand2 } from "lucide-react";
+import { User, Upload, Trash2, Wand2} from "lucide-react";
 import { removeBackground as removeImageBackground } from "@imgly/background-removal";
 
 // 1. Daftar warna background
@@ -26,11 +26,11 @@ const createColoredImage = (imageBlob, color) =>
       canvas.height = image.height;
 
       const context = canvas.getContext("2d");
-      
+
       // Warnai background
       context.fillStyle = color;
       context.fillRect(0, 0, canvas.width, canvas.height);
-      
+
       // Tempelkan foto di atas warna
       context.drawImage(image, 0, 0);
 
@@ -52,7 +52,7 @@ const PersonalInfoForm = ({ data = {}, onChange }) => {
   const fileInputRef = useRef(null);
   const [processing, setProcessing] = useState(false);
   const [isBgRemoved, setIsBgRemoved] = useState(false);
-  
+
   // State untuk menyimpan foto mentah tanpa background dan warna saat ini
   const [transparentBlob, setTransparentBlob] = useState(null);
   const [bgColor, setBgColor] = useState("transparent");
@@ -114,7 +114,7 @@ const PersonalInfoForm = ({ data = {}, onChange }) => {
 
       // Proses hapus background dengan AI
       const resultBlob = await removeImageBackground(originalImage);
-      
+
       // Simpan hasil transparan ke state lokal
       setTransparentBlob(resultBlob);
       setBgColor("transparent");
@@ -145,10 +145,10 @@ const PersonalInfoForm = ({ data = {}, onChange }) => {
 
     try {
       const coloredBlob = await createColoredImage(transparentBlob, BACKGROUND_COLORS[selectedColorKey]);
-      
+
       const ext = selectedColorKey === "transparent" ? "png" : "jpg";
       const mimeType = selectedColorKey === "transparent" ? "image/png" : "image/jpeg";
-      
+
       const processedFile = new File(
         [coloredBlob],
         `profile-bg-${Date.now()}.${ext}`,
@@ -182,12 +182,13 @@ const PersonalInfoForm = ({ data = {}, onChange }) => {
     <div className="flex flex-col gap-5 w-full">
       {/* Header Section */}
       <div className="border-b border-neutral-800 pb-2 mb-2">
-        <h3 className="text-lg font-semibold text-white">Personal Info</h3>
+        <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+          <User className="size-5 text-violet-500" /> Personal Info
+        </h3>
         <p className="text-xs text-neutral-500 mt-1">
           Masukkan informasi dasar dan kontak Anda di sini.
         </p>
       </div>
-
       {/* Image Upload Section */}
       <div className="flex items-start gap-4">
         <label className="cursor-pointer shrink-0">

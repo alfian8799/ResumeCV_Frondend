@@ -3,3 +3,30 @@
 html {
   scroll-behavior: smooth;
 }
+
+.resume-preview,
+.resume-preview * {
+  font-family: inherit !important;
+  text-align: inherit !important;
+  line-height: var(--resume-line-height) !important;
+}
+
+.resume-preview .text-xs {
+  font-size: calc(var(--resume-base-size) * 0.75) !important;
+}
+
+.resume-preview .text-sm {
+  font-size: calc(var(--resume-base-size) * 0.875) !important;
+}
+
+.resume-preview .text-lg {
+  font-size: calc(var(--resume-base-size) * 1.125) !important;
+}
+
+.resume-preview .text-3xl {
+  font-size: calc(var(--resume-base-size) * 1.875) !important;
+}
+
+.resume-preview .md\:text-4xl {
+  font-size: calc(var(--resume-base-size) * 2.25) !important;
+}

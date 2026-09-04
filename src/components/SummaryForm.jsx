@@ -1,4 +1,4 @@
-
+import { FileText } from "lucide-react";
 
 const SummaryForm = ({
   data = "",
@@ -9,9 +9,11 @@ const SummaryForm = ({
   return (
     <div className="flex flex-col gap-5 w-full">
       <div className="border-b border-neutral-800 pb-2 mb-2">
-        <h3 className="text-lg font-semibold text-white">Summary</h3>
-        <p className="text-xs text-neutral-500 mt-1">Tuliskan ringkasan singkat mengenai profil profesional dan tujuan karier Anda.</p>
-      </div>
+  <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+    <FileText className="size-5 text-violet-500" /> Summary
+  </h3>
+  <p className="text-xs text-neutral-500 mt-1">Tuliskan ringkasan singkat mengenai profil profesional dan tujuan karier Anda.</p>
+</div>
       
       {/* Kotak Input Teks Area untuk Summary */}
       <div className="flex flex-col gap-1.5">

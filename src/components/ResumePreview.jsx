@@ -1,5 +1,6 @@
 import ModernTemplate from './Templates/ModernTemplate.jsx';
 import ClassicTemplate from './Templates/ClassicTemplate.jsx';
+import "../assets/print.css";
 
 
 const ResumePreview = ({ data, template, accentColor = "#8b5cf6" }) => {
