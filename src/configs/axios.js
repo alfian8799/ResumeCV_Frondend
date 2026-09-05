@@ -16,7 +16,7 @@ api.interceptors.request.use(async (config) => {
     }
 
     if (!csrfToken) {
-        const response = await api.get('/auth/csrf');
+        const response = await api.get('/auth/csrf', { params: { t: Date.now() } });
         csrfToken = response.data.csrfToken;
     }
 
@@ -28,7 +28,7 @@ api.interceptors.response.use((response) => response, async (error) => {
     if (error.response?.status === 403 && error.config && !error.config._csrfRetry) {
         csrfToken = undefined;
         error.config._csrfRetry = true;
-        const response = await api.get('/auth/csrf');
+        const response = await api.get('/auth/csrf', { params: { t: Date.now() } });
         csrfToken = response.data.csrfToken;
         error.config.headers['X-CSRF-Token'] = csrfToken;
         return api(error.config);
