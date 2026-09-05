@@ -60,7 +60,9 @@ const LoginView = () => {
         error?.response?.data?.error ||
         error?.message ||
         "Request failed. Please try again.";
-      setErrorMsg(message);
+      setErrorMsg(message === "Email sudah digunakan"
+        ? "Email sudah terdaftar. Silakan pilih Masuk untuk login."
+        : message);
     } finally {
       setDisable(false);
     }
