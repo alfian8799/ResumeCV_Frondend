@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom"
+import { useLanguage } from "../languageContext.js";
 
 const CallToAction = () => {
+    const { language } = useLanguage();
     return (
         <>
             <style>{`
@@ -16,21 +18,21 @@ const CallToAction = () => {
 
                     {/* BADGE: Tetap menggunakan outline dan teks transparan */}
                     <p className="px-6 py-2 rounded-full text-sm border border-[#54487B] bg-linear-to-r from-[#A992F2] to-[#DFAB9B] bg-clip-text text-transparent cursor-default">
-                        Ready to start?
+                        {language === 'id' ? 'Siap memulai?' : 'Ready to start?'}
                     </p>
 
                     <h1 className="text-4xl md:text-5xl md:leading-15 font-medium max-w-2xl mt-5">
-                        Join 10,000+ Job Seekers
-                        <span className="bg-linear-to-r from-[#A992F2] to-[#DFAB9B] bg-clip-text text-transparent"> landing their dream jobs</span>
+                        {language === 'id' ? 'Bergabung dengan 10.000+ Pencari Kerja' : 'Join 10,000+ Job Seekers'}
+                        <span className="bg-linear-to-r from-[#A992F2] to-[#DFAB9B] bg-clip-text text-transparent"> {language === 'id' ? 'meraih pekerjaan impian' : 'landing their dream jobs'}</span>
                     </h1>
 
                     <p className="text-white text-sm mt-2">
-                        Unlock all our premium resume templates instantly.
+                        {language === 'id' ? 'Gunakan semua template resume premium kami sekarang.' : 'Unlock all our premium resume templates instantly.'}
                     </p>
 
                     {/* TOMBOL: Diubah menjadi background solid gradient agar sangat menonjol */}
                     <Link to="/login" className="px-12 py-3 mt-6 rounded-full text-sm font-semibold text-[#1a0b3b] bg-linear-to-r from-[#A992F2] to-[#DFAB9B] hover:opacity-90 hover:-translate-y-1 active:scale-95 transition-all shadow-[0_0_20px_rgba(169,146,242,0.4)]">
-                        Build My CV Now
+                        {language === 'id' ? 'Buat CV Saya Sekarang' : 'Build My CV Now'}
                     </Link>
 
                 </div>

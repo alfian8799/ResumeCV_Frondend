@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 import api from "../configs/axios.js"
 import { Navigate } from "react-router-dom";
+import LanguageToggle from "../components/LanguageToggle.jsx";
+import { useLanguage } from "../languageContext.js";
 
 
 
@@ -14,6 +16,7 @@ const LoginView = () => {
 
   const navigate = useNavigate();
   const { setUserData, isAuthentication } = useAuthStore();
+  const { t } = useLanguage();
 
 
   const [formData, setFormData] = useState({
@@ -66,16 +69,19 @@ const LoginView = () => {
   return !isAuthentication ? (
     <>
       <section className="bg-black w-full py-15 min-h-screen flex justify-center items-center">
+        <div className="fixed top-5 right-5 z-10">
+          <LanguageToggle />
+        </div>
         <form
           onSubmit={handleSubmit}
           className="w-full sm:w-87.5 text-center bg-white/6 border border-white/10 rounded-2xl px-8"
         >
           <h1 className="text-white text-3xl mt-10 font-medium">
-            {state === "login" ? "Login" : "Sign up"}
+            {state === "login" ? t.login : t.signUp}
           </h1>
 
           <p className="text-gray-400 text-sm mt-2">
-            Please  {state === "login" ? "Login" : "Sign up"} in to continue
+            {t.pleaseContinue}
           </p>
 
           {/* Error Message */}
@@ -90,7 +96,7 @@ const LoginView = () => {
               <input
                 type="text"
                 name="name"
-                placeholder="Name"
+                placeholder={t.name}
                 className="w-full bg-transparent text-white placeholder-white/60 border-none outline-none "
                 value={formData.name}
                 onChange={handleChange}
@@ -105,7 +111,7 @@ const LoginView = () => {
             <input
               type="email"
               name="email"
-              placeholder="Email"
+              placeholder={t.email}
               className="w-full bg-transparent text-white placeholder-white/60 border-none outline-none "
               value={formData.email}
               onChange={handleChange}
@@ -118,7 +124,7 @@ const LoginView = () => {
             <input
               type="password"
               name="password"
-              placeholder="Password"
+              placeholder={t.password}
               className="w-full bg-transparent text-white placeholder-white/60 border-none outline-none"
               value={formData.password}
               onChange={handleChange}
@@ -140,7 +146,7 @@ const LoginView = () => {
             disable:bg-gray-400 disabled:cursor-not-allowed disable:text-white
             disabled={disable}
           >
-            {state === "login" ? "Login" : "Sign up"}
+            {state === "login" ? t.login : t.signUp}
           </button>
           <p
             onClick={() =>
@@ -149,10 +155,10 @@ const LoginView = () => {
             className="text-gray-400 text-sm mt-3 mb-11 cursor-pointer"
           >
             {state === "login"
-              ? "Don't have an account?"
-              : "Already have an account?"}
+              ? t.noAccount
+              : t.haveAccount}
             <span className="text-indigo-400 hover:underline ml-1">
-              {state === "login" ? "Sign up" : "Login"}
+              {state === "login" ? t.signUp : t.login}
             </span>
           </p>
         </form>

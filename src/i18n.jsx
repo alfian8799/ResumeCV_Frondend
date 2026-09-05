@@ -1,0 +1,111 @@
+import { useEffect, useMemo, useState } from "react";
+import { LanguageContext } from "./languageContext.js";
+
+const translations = {
+  id: {
+    language: "Bahasa",
+    english: "English",
+    indonesian: "Indonesia",
+    logout: "Keluar",
+    logoutTitle: "Keluar dari Akun?",
+    logoutMessage: "Apakah Anda yakin ingin keluar dari sesi ini? Anda harus login kembali untuk mengakses resume.",
+    cancel: "Batal",
+    yesLogout: "Ya, Keluar",
+    greeting: "Hai",
+    login: "Masuk",
+    signUp: "Daftar",
+    name: "Nama",
+    email: "Email",
+    password: "Kata sandi",
+    pleaseContinue: "Silakan masuk untuk melanjutkan",
+    noAccount: "Belum punya akun?",
+    haveAccount: "Sudah punya akun?",
+    dashboardTitle: "Resume Saya",
+    dashboardDescription: "Kelola, edit, atau buat CV profesional baru dengan mudah.",
+    atsFriendly: "Ramah ATS",
+    skills: "Keahlian",
+    edit: "Edit",
+    delete: "Hapus",
+    download: "Unduh",
+    createResume: "Buat Resume Baru",
+    templateDescription: "Pilih dari template profesional kami.",
+    resumeTitle: "Judul resume",
+    resumeTitleDescription: "Beri judul atau target posisi untuk memulai.",
+    resumePlaceholder: "mis. CV Frontend Developer",
+    create: "Buat",
+    deleteResume: "Hapus Resume?",
+    deleteMessage: "Apakah Anda yakin ingin menghapus resume dengan nama:",
+    deleting: "Menghapus...",
+    yesSure: "Ya, Yakin",
+    personalInfo: "Info Pribadi",
+    summary: "Ringkasan",
+    education: "Pendidikan",
+    experience: "Pengalaman",
+    projects: "Proyek",
+    achievements: "Pencapaian",
+    setting: "Pengaturan",
+    template: "Template",
+  },
+  en: {
+    language: "Language",
+    english: "English",
+    indonesian: "Indonesia",
+    logout: "Logout",
+    logoutTitle: "Log out of your account?",
+    logoutMessage: "Are you sure you want to end this session? You will need to log in again to access your resumes.",
+    cancel: "Cancel",
+    yesLogout: "Yes, log out",
+    greeting: "Hi",
+    login: "Login",
+    signUp: "Sign up",
+    name: "Name",
+    email: "Email",
+    password: "Password",
+    pleaseContinue: "Please log in to continue",
+    noAccount: "Don't have an account?",
+    haveAccount: "Already have an account?",
+    dashboardTitle: "My Resumes",
+    dashboardDescription: "Manage, edit, or create new professional resumes easily.",
+    atsFriendly: "ATS-Friendly",
+    skills: "Skills",
+    edit: "Edit",
+    delete: "Delete",
+    download: "Download",
+    createResume: "Create New Resume",
+    templateDescription: "Choose from our professional templates.",
+    resumeTitle: "Resume title",
+    resumeTitleDescription: "Give your resume a title or target role to get started.",
+    resumePlaceholder: "e.g. Frontend Developer CV",
+    create: "Create",
+    deleteResume: "Delete Resume?",
+    deleteMessage: "Are you sure you want to delete the resume named:",
+    deleting: "Deleting...",
+    yesSure: "Yes, delete it",
+    personalInfo: "Personal Info",
+    summary: "Summary",
+    education: "Education",
+    experience: "Experience",
+    projects: "Projects",
+    achievements: "Achievements",
+    setting: "Settings",
+    template: "Template",
+  },
+};
+
+export const LanguageProvider = ({ children }) => {
+  const [language, setLanguage] = useState(() => localStorage.getItem("resume-language") || "id");
+
+  useEffect(() => {
+    localStorage.setItem("resume-language", language);
+    document.documentElement.lang = language;
+  }, [language]);
+
+  const value = useMemo(() => ({
+    language,
+    setLanguage,
+    toggleLanguage: () => setLanguage((current) => current === "id" ? "en" : "id"),
+    t: translations[language],
+  }), [language]);
+
+  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
+};

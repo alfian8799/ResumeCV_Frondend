@@ -1,16 +1,29 @@
 import Title from './Title.jsx';
+import { useLanguage } from '../languageContext.js';
 const Testimoni = () => {
+    const { language } = useLanguage();
+    const indonesianDescriptions = [
+        "VinzCV benar-benar mengubah cara saya membuat resume. Templatenya rapi, profesional, dan ramah ATS!",
+        "Saya bisa membuat resume profesional dalam hitungan menit dan langsung menyesuaikannya dengan posisi yang saya incar.",
+        "VinzCV membuat penyusunan resume menjadi lebih mudah dengan struktur yang jelas dan pilihan template yang fleksibel.",
+        "Formulirnya membantu saya menyusun pengalaman dan pendidikan dengan rapi. Hasil akhirnya terlihat sangat profesional.",
+        "Pratinjau real-time membuat saya bisa melihat setiap perubahan resume tanpa harus membuka halaman lain.",
+        "Fitur ekspor PDF VinzCV sangat praktis. Resume saya siap dikirim untuk melamar pekerjaan kapan saja.",
+        "VinzCV membantu saya menonjolkan keahlian dan pencapaian dengan format resume yang terstruktur.",
+        "Saya menghemat banyak waktu karena tidak perlu mendesain resume dari awal. Semua bagian sudah mudah diatur.",
+        "Dengan VinzCV, saya bisa menyimpan dan memperbarui beberapa resume untuk posisi pekerjaan yang berbeda."
+    ];
 
     const testimonials = [
-        { id: 1, description: "VinzCV completely changed how I apply for jobs. The templates are so clean and ATS-friendly!w", image: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=200", name: "Alex Turner", company: "Vercel" },
-        { id: 2, description: "We shipped our MVP weeks earlier than planned. PrebuiltUI removed a huge amount of repetitive UI work. ", image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200", name: "Harry Peter", company: "Amazon" },
-        { id: 3, description: "PrebuiltUI strikes the right balance between flexibility and consistency. It feels like a system built by real product teams.", image: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=200&auto=format&fit=crop&q=60", name: "Jason Kim", company: "Flipkart" },
-        { id: 4, description: "The component structure and tokens system make scaling design incredibly easy. Highly recommended.", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=100&h=100&auto=format&fit=crop", name: "Sofia Martinez", company: "Linear" },
-        { id: 5, description: "PrebuiltUI allows me to focus on building features instead of fighting CSS. Everything looks premium right out of the box.", image: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=200&auto=format&fit=crop&q=60", name: "Alex Johnson", company: "Microsoft" },
-        { id: 6, description: "If you’re using Tailwind CSS, PrebuiltUI is a must have. It dramatically speeds up development while keeping the UI clean.", image: "https://images.unsplash.com/photo-1701615004837-40d8573b6652?q=80&w=200", name: "Emily Karter", company: "Stripe" },
-        { id: 7, description: "PrebuiltUI strikes the right balance between flexibility and consistency. It feels like a system built by real product teams.", image: "https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/userImage/userImage1.png", name: "Christofer Levin", company: "Deloitte" },
-        { id: 8, description: "PrebuiltUI helped us reduce build time drastically. The components feel production ready and consistent across the product.", image: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=200", name: "Alex Turner", company: "Vercel" },
-        { id: 9, description: "We shipped our MVP weeks earlier than planned. PrebuiltUI removed a huge amount of repetitive UI work. ", image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200", name: "Harry Peter", company: "Amazon" }
+        { id: 1, description: "VinzCV completely changed how I create my resume. The templates are clean, professional, and ATS-friendly!", image: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=200", name: "Budi Santoso", role: { id: "Software Engineer", en: "Software Engineer" } },
+        { id: 2, description: "I created a professional resume in minutes and tailored it directly to the role I was applying for.", image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200", name: "Siti Rahma", role: { id: "Marketing Specialist", en: "Marketing Specialist" } },
+        { id: 3, description: "VinzCV makes resume building easier with a clear structure and flexible template options.", image: "https://images.unsplash.com/photo-1527980965255-d3b416303d12?w=200&auto=format&fit=crop&q=60", name: "Andi Wijaya", role: { id: "UI/UX Designer", en: "UI/UX Designer" } },
+        { id: 4, description: "The forms helped me organize my experience and education clearly. The final resume looks very professional.", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=100&h=100&auto=format&fit=crop", name: "Dewi Lestari", role: { id: "Guru", en: "Teacher" } },
+        { id: 5, description: "The real-time preview lets me see every resume change without opening another page.", image: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=200&auto=format&fit=crop&q=60", name: "Rizky Pratama", role: { id: "Data Analyst", en: "Data Analyst" } },
+        { id: 6, description: "VinzCV's PDF export is incredibly practical. My resume is ready to send with every application.", image: "https://images.unsplash.com/photo-1701615004837-40d8573b6652?q=80&w=200", name: "Nabila Putri", role: { id: "Content Writer", en: "Content Writer" } },
+        { id: 7, description: "VinzCV helped me highlight my skills and achievements in a structured resume format.", image: "https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/userImage/userImage1.png", name: "Fajar Hidayat", role: { id: "Project Manager", en: "Project Manager" } },
+        { id: 8, description: "I saved a lot of time because I did not have to design my resume from scratch. Every section is easy to edit.", image: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=200", name: "Maya Anggraini", role: { id: "HR Specialist", en: "HR Specialist" } },
+        { id: 9, description: "With VinzCV, I can save and update multiple resumes for different job applications.", image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=200", name: "Gilang Saputra", role: { id: "Business Analyst", en: "Business Analyst" } }
     ]
 
     const columns = [
@@ -27,13 +40,13 @@ const Testimoni = () => {
                 </svg>
             </div>
             <p className="text-sm text-slate-400 mb-5 leading-relaxed">
-                {testimonial.description}
+                {language === 'id' ? indonesianDescriptions[testimonial.id - 1] : testimonial.description}
             </p>
             <div className="flex items-center gap-3">
                 <img src={testimonial.image} alt={testimonial.name} className="size-9 rounded-full border border-slate-800" />
                 <div>
                     <p className="text-sm text-slate-300">{testimonial.name}</p>
-                    <p className="text-sm text-slate-500">{testimonial.company}</p>
+                    <p className="text-sm text-slate-500">{testimonial.role[language]}</p>
                 </div>
             </div>
         </div>
@@ -43,9 +56,9 @@ const Testimoni = () => {
         <>
             <div id="testimoni">
                 <Title
-                    badge="Testimonials"
-                    title="Loved by Job Seekers"
-                    description="See how VinzCV has helped thousands of professionals land their dream jobs."
+                    badge={language === 'id' ? 'Testimoni' : 'Testimonials'}
+                    title={language === 'id' ? 'Disukai Para Pencari Kerja' : 'Loved by Job Seekers'}
+                    description={language === 'id' ? 'Lihat bagaimana VinzCV membantu ribuan profesional mendapatkan pekerjaan impian.' : 'See how VinzCV has helped thousands of professionals land their dream jobs.'}
                 />
 
                 <style>

@@ -12,10 +12,12 @@ import SkillsForm from "../components/SkillsForm.jsx";
 import AchievementsForm from "../components/AchievementsForm.jsx";
 import ResumePreview from "../components/ResumePreview.jsx";
 import SettingForm from "../components/SettingForm.jsx";
+import { useLanguage } from "../languageContext.js";
 
 const ResumeBuilderView = () => {
   const { resumeId } = useParams();
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
 
@@ -46,15 +48,15 @@ const ResumeBuilderView = () => {
   const [removeBackground, setRemoveBackground] = useState(false);
 
   const sections = [
-    { id: "personal", name: "Personal Info" },
-    { id: "summary", name: "Summary" },
-    { id: "education", name: "Education" },
-    { id: "experience", name: "Experience" },
-    { id: "projects", name: "Projects" },
-    { id: "skills", name: "Skills" },
-    { id: "achievements", name: "Achievements" },
-    { id: "setting", name: "Setting" },
-    { id: "template", name: "Template" },
+    { id: "personal", name: t.personalInfo },
+    { id: "summary", name: t.summary },
+    { id: "education", name: t.education },
+    { id: "experience", name: t.experience },
+    { id: "projects", name: t.projects },
+    { id: "skills", name: t.skills },
+    { id: "achievements", name: t.achievements },
+    { id: "setting", name: t.setting },
+    { id: "template", name: t.template },
   ];
 
   const handleShareResume = () => {

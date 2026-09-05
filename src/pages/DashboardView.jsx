@@ -2,6 +2,7 @@ import { useState } from "react";
 import api from "../configs/axios.js";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "../languageContext.js";
 
 const DashboardView = () => {
   const [showCreateResume, setShowCreateResume] = useState(false);
@@ -13,6 +14,7 @@ const DashboardView = () => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   // CREATE RESUME
   const handleCreateResume = async (e) => {
@@ -79,8 +81,8 @@ const DashboardView = () => {
           {/* Bagian Sambutan & Tombol Buat CV Baru */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight">My Resumes</h1>
-              <p className="text-white/60 text-sm mt-1">Manage, edit, or create new professional CVs easily.</p>
+              <h1 className="text-3xl font-bold tracking-tight">{t.dashboardTitle}</h1>
+              <p className="text-white/60 text-sm mt-1">{t.dashboardDescription}</p>
             </div>
           </div>
 
@@ -101,7 +103,7 @@ const DashboardView = () => {
                 >
                   <div>
                     <div className="flex justify-between items-start">
-                      <span className="text-xs bg-violet-500/20 text-violet-400 px-3 py-1 rounded-full font-medium">ATS-Friendly</span>
+                      <span className="text-xs bg-violet-500/20 text-violet-400 px-3 py-1 rounded-full font-medium">{t.atsFriendly}</span>
 
                       {/* tanggal pembuatan cv */}
                       <span className="text-xs text-white/40">
@@ -118,7 +120,7 @@ const DashboardView = () => {
                     <h3 className="text-lg font-semibold text-white mt-4 group-hover:text-violet-400 transition-colors">{item.title}</h3>
 
                     {/* skills */}
-                    <p className="text-xs text-white/50 mt-1 truncate">Skills: {skillsArray}</p>
+                    <p className="text-xs text-white/50 mt-1 truncate">{t.skills}: {skillsArray}</p>
                   </div>
 
                   {/* button edit, delete, download */}
@@ -127,7 +129,7 @@ const DashboardView = () => {
                       onClick={() => navigate(`/app/builder/${item._id}`)}
                       className="flex-1 bg-white/10 hover:bg-white/20 text-white text-xs py-2 rounded-lg transition cursor-pointer"
                     >
-                      Edit
+                      {t.edit}
                     </button>
                     <button 
                       onClick={() => {
@@ -136,12 +138,12 @@ const DashboardView = () => {
                       }} 
                       className="flex-1 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-xs py-2 rounded-lg transition cursor-pointer"
                     >
-                      Delete
+                      {t.delete}
                     </button>
                     <button 
                       className="flex-1 bg-violet-600 hover:bg-violet-700 text-white text-xs py-2 rounded-lg transition cursor-pointer"
                     >
-                      Download
+                      {t.download}
                     </button>
                   </div>
                 </div>
@@ -156,8 +158,8 @@ const DashboardView = () => {
               <div className="size-12 rounded-full bg-neutral-900 group-hover:bg-violet-600/20 text-white/60 group-hover:text-violet-400 flex items-center justify-center transition-all mb-3 text-xl font-bold">
                 +
               </div>
-              <p className="text-sm font-medium text-white">Create New Resume</p>
-              <p className="text-xs text-white/40 mt-1 max-w-50">Choose from our professional templates.</p>
+              <p className="text-sm font-medium text-white">{t.createResume}</p>
+              <p className="text-xs text-white/40 mt-1 max-w-50">{t.templateDescription}</p>
             </div>
 
           </div>
@@ -171,12 +173,12 @@ const DashboardView = () => {
             onSubmit={handleCreateResume}
             className="w-full max-w-md bg-neutral-900 border border-neutral-800 rounded-2xl p-6 flex flex-col gap-4 shadow-2xl relative"
           >
-            <h2 className="text-xl font-bold text-white">Create New Resume</h2>
-            <p className="text-xs text-white/60">Give your resume a title or target role to get started.</p>
+            <h2 className="text-xl font-bold text-white">{t.createResume}</h2>
+            <p className="text-xs text-white/60">{t.resumeTitleDescription}</p>
 
             <input
               type="text"
-              placeholder="e.g. Frontend Developer CV"
+              placeholder={t.resumePlaceholder}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full bg-black border border-neutral-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors"
@@ -193,13 +195,13 @@ const DashboardView = () => {
                 onClick={CloseCreateResume}
                 className="px-4 py-2 rounded-xl text-sm font-medium text-white/60 hover:text-white hover:bg-white/5 transition cursor-pointer"
               >
-                Cancel
+                {t.cancel}
               </button>
               <button
                 type="submit"
                 className="px-6 py-2 rounded-xl text-sm font-semibold bg-violet-600 hover:bg-violet-700 text-white transition cursor-pointer"
               >
-                Create
+                {t.create}
               </button>
             </div>
           </form>
@@ -220,9 +222,9 @@ const DashboardView = () => {
               </svg>
             </div>
 
-            <h3 className="text-white text-lg font-semibold mb-2">Hapus Resume?</h3>
+            <h3 className="text-white text-lg font-semibold mb-2">{t.deleteResume}</h3>
             <p className="text-neutral-400 text-sm mb-6">
-              Apakah Anda yakin ingin menghapus resume dengan nama: <span className="text-white font-semibold">"{selectedResume.title}"</span>?
+              {t.deleteMessage} <span className="text-white font-semibold">"{selectedResume.title}"</span>?
             </p>
 
             <div className="flex gap-3">
@@ -249,10 +251,10 @@ const DashboardView = () => {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Menghapus...
+                    {t.deleting}
                   </>
                 ) : (
-                  "Iya, Yakin"
+                  t.yesSure
                 )}
               </button>
             </div>

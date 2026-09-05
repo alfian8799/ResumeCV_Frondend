@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { useAuthStore } from '../stores/authStore';
 import { useNavigate } from 'react-router-dom';
 import api from "../configs/axios.js";
+import { useLanguage } from "../languageContext.js";
 
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, removeUserData } = useAuthStore();
+  const { language, toggleLanguage, t } = useLanguage();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const navigate = useNavigate();
@@ -56,11 +58,19 @@ const Header = () => {
           </div>
 
           <div className="hidden md:flex items-center gap-4">
-            <span className="text-sm text-neutral-400 font-medium">Hy, {user.name}</span>
+            <button
+              type="button"
+              onClick={toggleLanguage}
+              className="rounded-full border border-neutral-700 px-3 py-1.5 text-xs font-medium text-neutral-300 hover:border-violet-500 hover:text-white transition"
+              aria-label={`${t.language}: ${language === 'id' ? t.indonesian : t.english}`}
+            >
+              {language === 'id' ? 'ID' : 'EN'}
+            </button>
+            <span className="text-sm text-neutral-400 font-medium">{t.greeting}, {user.name}</span>
             <button
               onClick={() => setShowLogoutModal(true)}
               className="flex items-center gap-2.5 bg-linear-to-r from-violet-600 to-indigo-600 text-white hover:opacity-90 active:scale-95 transition text-sm font-medium pl-5 pr-1.5 py-1.5 rounded-full cursor-pointer shadow-[0_0_15px_rgba(139,92,246,0.3)]">
-              Logout
+              {t.logout}
               <span className="size-7 rounded-full bg-white text-violet-600 flex items-center justify-center">
                 <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M.6 4.602h10m-4-4 4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -83,14 +93,21 @@ const Header = () => {
             <div
 
               className="absolute top-full left-0 w-full mt-2 bg-neutral-900 border border-neutral-800 rounded-2xl flex flex-col p-5 gap-3 md:hidden shadow-2xl z-50">
-              <span className="text-sm text-neutral-400 px-2">Hy, Alfian</span>
+              <button
+                type="button"
+                onClick={toggleLanguage}
+                className="self-start rounded-full border border-neutral-700 px-3 py-1.5 text-xs text-neutral-300"
+              >
+                {language === 'id' ? 'English' : 'Indonesia'}
+              </button>
+              <span className="text-sm text-neutral-400 px-2">{t.greeting}, {user.name}</span>
               <button
                 onClick={() => {
                   setMenuOpen(false);
                   setShowLogoutModal(true);
                 }}
                 className=" flex items-center justify-center gap-2.5 bg-linear-to-r from-violet-600 to-indigo-600 text-white text-sm font-medium px-5 py-2.5 rounded-full cursor-pointer w-full">
-                Logout
+                {t.logout}
 
                 <span className="size-7 rounded-full bg-white text-violet-600 flex items-center justify-center">
                   <svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -118,9 +135,9 @@ const Header = () => {
             </div>
 
             {/* Teks Konfirmasi */}
-            <h3 className="text-white text-lg font-semibold mb-2">Keluar dari Akun?</h3>
+            <h3 className="text-white text-lg font-semibold mb-2">{t.logoutTitle}</h3>
             <p className="text-neutral-400 text-sm mb-6">
-              Apakah Anda yakin ingin keluar dari sesi ini? Anda harus login kembali untuk mengakses resume.
+              {t.logoutMessage}
             </p>
 
             {/* Tombol Aksi (Iya / Tidak) */}
@@ -129,7 +146,7 @@ const Header = () => {
                 onClick={() => setShowLogoutModal(false)}
                 className="flex-1 py-2.5 rounded-full border border-neutral-700 text-neutral-300 hover:bg-neutral-800 transition text-sm font-medium cursor-pointer"
               >
-                Tidak
+                {t.cancel}
               </button>
               <button
                 onClick={() => {
@@ -138,7 +155,7 @@ const Header = () => {
                 }}
                 className="flex-1 py-2.5 rounded-full bg-violet-600 text-white hover:bg-violet-500 transition text-sm font-medium cursor-pointer shadow-[0_0_15px_rgba(139,92,246,0.3)]"
               >
-                Iya, Keluar
+                {t.yesLogout}
               </button>
             </div>
           </div>
