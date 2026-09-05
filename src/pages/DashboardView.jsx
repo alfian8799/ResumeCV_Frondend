@@ -12,7 +12,6 @@ const DashboardView = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedResume, setSelectedResume] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   const navigate = useNavigate();
   const { t } = useLanguage();
@@ -54,15 +53,8 @@ const DashboardView = () => {
 
   // GET ALL RESUME
   const getAllResume = async () => {
-    try {
-      setIsLoading(true);
-      const response = await api.get("/resume");
-      setResume(response.data.resume || []);
-    } catch (error) {
-      setErrMsg(error.response?.data?.message || "Dashboard resume tidak dapat dimuat.");
-    } finally {
-      setIsLoading(false);
-    }
+    const response = await api.get("/resume");
+    setResume(response.data.resume);
   };
 
   useEffect(() => {
@@ -96,14 +88,6 @@ const DashboardView = () => {
 
           {/* Grid Daftar CV */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
-            {isLoading && (
-              <p className="text-sm text-white/60">Memuat resume...</p>
-            )}
-
-            {!isLoading && errMsg && !showCreateResume && (
-              <p className="text-sm text-red-400">{errMsg}</p>
-            )}
 
             {/* looping data resume dari database */}
             {resume.map((item, index) => {

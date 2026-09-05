@@ -52,7 +52,7 @@ const LoginView = () => {
         setUserData(user);
       }
 
-      navigate("/app", { replace: true });
+      navigate("/app");
     } catch (error) {
       console.error("Auth request failed:", error);
       const message =
@@ -60,9 +60,7 @@ const LoginView = () => {
         error?.response?.data?.error ||
         error?.message ||
         "Request failed. Please try again.";
-      setErrorMsg(message === "Email sudah digunakan"
-        ? "Email sudah terdaftar. Silakan pilih Masuk untuk login."
-        : message);
+      setErrorMsg(message);
     } finally {
       setDisable(false);
     }
