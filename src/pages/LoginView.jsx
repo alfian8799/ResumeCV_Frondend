@@ -52,7 +52,7 @@ const LoginView = () => {
         setUserData(user);
       }
 
-      navigate("/app");
+      navigate("/app", { replace: true });
     } catch (error) {
       console.error("Auth request failed:", error);
       const message =

@@ -3,8 +3,8 @@ import Header from "../components/Header"
 import { useAuthStore } from "../stores/authStore"
 
 const MainLayout = () => {
-  const { isAuthentication } = useAuthStore();
-  return isAuthentication ? (
+  const { isAuthentication, user } = useAuthStore();
+  return isAuthentication && user ? (
    <>
     <Header />
     <Outlet />
